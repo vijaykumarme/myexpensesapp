@@ -164,18 +164,22 @@ app.post("/addCategory", async(req,res) => {
 app.post("/addmonthlyincome", async(req,res) => {
   try{
 
-    const incomeExists = await pool.query("SELECT * FROM monthlyincome WHERE year = $1 AND month = $2",[req.body.year, req.body.month]);
+    const incomeExists = await pool.query("SELECT * FROM monthlyincome WHERE year = $1 AND month = $2 AND userid = $3",[req.body.year, req.body.month, req.body.useremail]);
 
     if(incomeExists.rows.length !== 0) {
       return res.status(401).json("Record already exists")
     }
 
-    const addmonthlyincome = await pool.query("INSERT INTO monthlyincome (year,month,amount) values($1,$2,$3) returning *",
-  [
-    req.body.year,
-    req.body.month,
-    req.body.amount
-  ]);
+    const addmonthlyincome = await pool.query(
+        "INSERT INTO monthlyincome (year, month, amount, userid) VALUES ($1, $2, $3, $4) RETURNING *",
+        [
+            req.body.year,
+            req.body.month,
+            req.body.amount,
+            req.body.useremail
+        ]
+    );
+  
   res.json(addmonthlyincome.rows[0]);
   } catch(err) {
     console.error(err.message)
@@ -192,6 +196,30 @@ app.post("/getmonthlyincome", async(req,res) => {
     console.error(err.message)
   }
 })
+
+app.post("/getallmonthsincome", async(req,res) => {
+  try {
+    const getallmonthsincome = await pool.query("SELECT * FROM monthlyincome WHERE userid = $1 order by year,month",
+    [req.body.useremail]
+    )
+
+    res.json(getallmonthsincome.rows)
+  } catch(err) {
+    console.error(err.message)
+  }
+})
+
+app.delete("/deletemonthincome/:id", async(req,res) => {
+  try {
+    const { id } = req.params;
+    await pool.query("DELETE FROM monthlyincome WHERE incomeid = $1",[id]);
+    res.json({ message: "Record deleted successfully"});
+  } catch(err) {
+    console.error(err.message)
+    res.status(500).json({error: "An error occured while deleting the record"})
+  }
+})
+
 
 //Server Port
 app.listen(5000, () => {

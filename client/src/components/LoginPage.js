@@ -61,7 +61,7 @@ const LoginPage = () => {
                     </div>
                     <div className="d-flex justify-content-between">
                     <Link to="/SigninPage">Register</Link>
-                    <Link to="/">Forgot Password?</Link>
+                    <Link to="/" className="d-none">Forgot Password?</Link>
                     </div>
                 </div>
             </div>

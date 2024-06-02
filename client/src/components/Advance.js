@@ -1,8 +1,14 @@
-import React, { Fragment,useState } from "react";
+import React, { Fragment,useContext,useState } from "react";
 import axios from "axios";
 import Swal from 'sweetalert2';
+import { Link } from "react-router-dom";
+
+// Components
+import AppContext from "../AppContext";
 
 const Advance = () => {
+
+    const { useremail } = useContext(AppContext)
 
     const [addCategory, setAddCategory] = useState(false)
     const [addMonthlyIncome, setAddMonthlyIncome] = useState(false)
@@ -45,7 +51,6 @@ const Advance = () => {
                     timer: 1500
                 });
             }
-            console.log(response.data);
         } catch (err) {
             setAddCategory(false);
             Swal.fire({
@@ -72,9 +77,12 @@ const Advance = () => {
     const MonthlyIncomeSumitHandler = async(e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:5000/addmonthlyincome",
-                {year,month,amount}
-            );
+            const response = await axios.post("http://localhost:5000/addmonthlyincome", {
+                year,
+                month,
+                amount,
+                useremail
+            });
 
             if(response.data !== 0) {
                 Swal.fire({
@@ -96,9 +104,17 @@ const Advance = () => {
             setAddMonthlyIncome(false)
         } catch(err) {
             console.log(err.message)
-            }
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Monthly income not added",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
         setAddMonthlyIncome(false);
     }
+
 
     return(
         <Fragment>
@@ -165,7 +181,10 @@ const Advance = () => {
                 
             </div>
             <div className="border border-dark rounded m-1">
-                <h5 className="my-1 p-2">View Monthly Income vs Expenses</h5>
+                <div className="d-flex justify-content-between align-items-center my-2 px-2">
+                    <h5 className="mb-0">View Monthly Income vs Expenses</h5>
+                    <Link to="/userMonthlyIncome" className="btn btn-primary">View</Link>
+                </div>
             </div>
         </Fragment>
     )

@@ -15,6 +15,8 @@ import EditExpenses from './components/EditExpenses';
 import AppContext from './AppContext';
 import Home from './components/Home';
 import Advance from './components/Advance';
+import UserAllMonthsIncome from './components/UserAllMonthsIncome';
+
 
 function App() {
 
@@ -62,6 +64,7 @@ function App() {
             <Route path="/History" element={isAuthenticated ? (<History />) : (<Navigate to="/" />)} />
             <Route path="/Dashboard" element={isAuthenticated ? (<Dashboard />) : (<Navigate to="/" />)} />
             <Route path="/Advance" element={isAuthenticated ? (<Advance />) : (<Navigate to="/" />)} />
+            <Route path="/userMonthlyIncome" element={isAuthenticated ? (<UserAllMonthsIncome />) : (<Navigate to="/" />)} />
             <Route path="/editExpenses" element={isAuthenticated ? (<EditExpenses expensesid={expensesid} />) : (<Navigate to="/" />)} />
           </Routes>
           <Footer />

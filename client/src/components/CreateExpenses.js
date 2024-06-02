@@ -27,7 +27,6 @@ const CreateExpenses = () => {
         const getAllCategories = async () => {
             try {
                 const allCategories = await axios.get("http://localhost:5000/categories")
-                console.log(allCategories.data)
                 setCategories(allCategories.data)
             }catch (err) {
                 console.log(err.message)

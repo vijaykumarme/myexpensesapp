@@ -27,7 +27,6 @@ const History = () => {
         const getAllRecords = async () => {
             try {
                 const response = await axios.post("http://localhost:5000/getexpenses",{userName});
-                console.log(response.data)
                 setAllExpenses(response.data)
             }catch(err) {
                 console.log(err.message)
@@ -48,16 +47,12 @@ const History = () => {
             console.log(err.message)
         }
     }
-    console.log("Start")
-    console.log(editExpense)
-    console.log("End")
 
     const deleteExpensesHandler = (id) => {
 
         const deleteHandler = () => {
             try {
                 const deleteExpenses = axios.delete(`http://localhost:5000/deleteExpense/${id}`)
-                console.log(deleteExpenses.data)
             } catch(err) {
                 console.log(err.message)
             }
@@ -78,10 +73,10 @@ const History = () => {
                 text: "Your file has been deleted.",
                 icon: "success"
               });
-              
+              setAllExpenses(allExpenses.filter(allExpenses => allExpenses.expenseid !== id))
             }
           });
-          setAllExpenses(allExpenses.filter(allExpenses => allExpenses.expenseid !== id))
+          
     }
 
     const [search, setSearch] = useState("")

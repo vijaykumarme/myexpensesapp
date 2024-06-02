@@ -103,13 +103,14 @@ const Home = () => {
         getCurrentMonthExpensesFunc();
     },[userName])
 
-    const calculateGradientColor = (amounts,maxAmount,minAmount) => {
+    const calculateGradientColor = (amounts, maxAmount, minAmount) => {
         const ratio = (amounts - minAmount) / (maxAmount - minAmount);
-        const r = Math.floor(255 * (1-ratio));
-        const g = Math.floor(255 * ratio);
-        const b = 0.6;
-        return `rgba(${r}, ${g}, ${b}, 0.6)`;
-    }
+        const r = Math.floor(255 * ratio); // Red component increases with ratio
+        const g = Math.floor(255 * (1 - ratio)); // Green component decreases with ratio
+        const b = 0; // Blue component is kept at 0 to maintain the red-green gradient
+        return `rgba(${r}, ${g}, ${b}, 0.6)`; // Alpha value is 0.6 for semi-transparency
+    };
+    
 
 
     const categories = getCurrentMonthExpenses.map(item => item.categoryname);
@@ -236,14 +237,14 @@ const Home = () => {
                     <Pie data={pieChartData} className="d-block h-100 w-100" alt="First slide" />
                     </div>
                 </div>
-                <div className="carousel-item">
+                {/* <div className="carousel-item">
                     <div className="parent-container pt-4" style={{ height: "500px" }}>
                         <Line options={options} data={generateLineChartData} className="d-block" alt="Second slide" />
                     </div>
-                </div>
-                <div className="carousel-item">
+                </div> */}
+                {/* <div className="carousel-item">
                     <Pie data={pieChartData} className="d-block w-100" alt="Third slide" />
-                </div>
+                </div> */}
             </div>
             <a className="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
                 <span className="carousel-control-prev-icon" aria-hidden="true"></span>
