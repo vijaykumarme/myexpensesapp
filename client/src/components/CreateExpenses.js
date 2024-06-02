@@ -1,7 +1,16 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2';
+
+//components
+import AppContext from "../AppContext";
 
 const CreateExpenses = () => {
+
+    const {userName} = useContext(AppContext)
+
+    const NavigateTo = useNavigate();
 
     const [categories, setCategories] = useState([]);
 
@@ -35,19 +44,26 @@ const CreateExpenses = () => {
         const currentDay = dateObject.getDate();
         const currentMonth = dateObject.getMonth()+1;
         const currentYear = dateObject.getFullYear();
-        const userid = 1;
+        const userid = userName;
         try {
-            const createExpenses = await axios.post("http://localhost:5000/createexpenses",{
-                userid,currentDay,currentMonth,currentYear,categoryName,description,Place,Amount,paymentMethod,date
+            const createExpenses = await axios.post("http://localhost:5000/createexpense",{
+                userid,categoryName,Amount,description,Place,paymentMethod,currentMonth,currentYear,date
             })
-            console.log(createExpenses.data)
+            Swal.fire({
+                title: "Created!",
+                text: "Your file has been deleted.",
+                icon: "success"
+              });
+            NavigateTo("/")
         } catch(err) {
-            console.log(err.message)
+            Swal.fire({
+                title: "Error!",
+                text: "Your file has been deleted.",
+                icon: "error"
+              });
+            NavigateTo("/")
         }
-        
-        console.log(currentDay)
-        console.log(currentMonth)
-        console.log(currentYear)
+
     }
 
 

@@ -36,3 +36,15 @@
     transform: rotate(360deg);
   }
 }
+
+/* Optional CSS */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure that the container takes up the full height of the viewport */
+}
+
+.content {
+  flex: 1; /* Allow the content to grow and fill the remaining space */
+  overflow-y: auto; /* Enable vertical scrolling for content */
+}

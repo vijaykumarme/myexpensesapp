@@ -1,11 +1,15 @@
 import React,{ Fragment } from "react";
 
+
 const Footer = () => {
     return (
-        <Fragment>
-            <p className="h3 text-center bg-dark text-light py-4">myexpenses 2024 &reg;</p>
-        </Fragment>
+        <footer className="bg-dark text-light text-center py-3">
+            <p className="h6 mb-0">myexpenses 2024 &reg;</p>
+        </footer>
     );
 };
 
 export default Footer;
+
+
+

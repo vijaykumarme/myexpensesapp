@@ -1,0 +1,263 @@
+import React, {useState, useEffect, useContext, Fragment} from "react";
+import axios from "axios";
+import { Pie, Line } from 'react-chartjs-2';
+import {
+    Chart as ChartJS, 
+    CategoryScale, 
+    LinearScale, 
+    PointElement, 
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+    ArcElement,
+} from 'chart.js'
+//import { Chart, ArcElement, Legend, Tooltip } from 'chart.js';
+import moment from 'moment';
+
+//components
+import AppContext from "../AppContext";
+
+
+
+ChartJS.register(
+    CategoryScale, 
+    LinearScale, 
+    PointElement, 
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+    ArcElement
+);
+
+const MonthNames = [
+    { monthId: 1, monthName: 'Jan' },
+    { monthId: 2, monthName: 'Feb' },
+    { monthId: 3, monthName: 'Mar' },
+    { monthId: 4, monthName: 'Apr' },
+    { monthId: 5, monthName: 'May' },
+    { monthId: 6, monthName: 'Jun' },
+    { monthId: 7, monthName: 'Jul' },
+    { monthId: 8, monthName: 'Aug' },
+    { monthId: 9, monthName: 'Sep' },
+    { monthId: 10, monthName: 'Oct' },
+    { monthId: 11, monthName: 'Nov' },
+    { monthId: 12, monthName: 'Dec' }
+];
+
+
+const Home = () => {
+
+    const {setUsername} = useContext(AppContext)
+    const {userName} = useContext(AppContext)
+    const {setUseremail} = useContext(AppContext)
+    const {useremail} = useContext(AppContext)
+
+    const [getCurrentMonthExpenses, setGetCurrentMonthExpenes] = useState([]);
+    const [getAllExpenses, setGetAllExpenses] = useState([])
+    const [getCurrentMonthIncome, setGetCurrentMonthIncome] = useState([])
+
+
+    const dateObject = new Date();
+    const currentMonth = dateObject.getMonth()+1;
+    const currentYear = dateObject.getFullYear();
+    const currentMonthName = MonthNames.find(month => month.monthId === currentMonth)
+
+
+    async function getCurrentMonthExpensesFunc () {
+        try {
+            const responsemonthly = await axios.post("http://localhost:5000/getcurrentmonthexpenses",{currentMonth,currentYear,userName});
+            setGetCurrentMonthExpenes(responsemonthly.data)
+            const responseall = await axios.post("http://localhost:5000/getmonthexpenses",{userName});
+            setGetAllExpenses(responseall.data)
+            const getcurrentincome = await axios.post("http://localhost:5000/getmonthlyincome",{currentYear,currentMonth,useremail});
+            setGetCurrentMonthIncome(getcurrentincome.data)
+        } catch(err) {
+            console.log(err.message)
+        }
+    }
+
+    async function getName() {
+        try {
+            const response = await fetch("http://localhost:5000/userdashboard/",{
+                method: "GET",
+                headers: {token: localStorage.token}
+            })
+            const parseRes = await response.json();
+            const currentUsername = parseRes.username
+            const currentUserEmail = parseRes.useremail
+            setUsername(currentUsername)
+            setUseremail(currentUserEmail)
+            
+        } catch(err) {
+            console.error(err.message);
+        }
+    }
+
+    useEffect(() => {
+        getName();
+    },[])
+
+    useEffect(() => {
+        getCurrentMonthExpensesFunc();
+    },[userName])
+
+    const calculateGradientColor = (amounts,maxAmount,minAmount) => {
+        const ratio = (amounts - minAmount) / (maxAmount - minAmount);
+        const r = Math.floor(255 * (1-ratio));
+        const g = Math.floor(255 * ratio);
+        const b = 0.6;
+        return `rgba(${r}, ${g}, ${b}, 0.6)`;
+    }
+
+
+    const categories = getCurrentMonthExpenses.map(item => item.categoryname);
+    const amounts = getCurrentMonthExpenses.map(item => item.totalamount);
+
+    const maxAmount = Math.max(...amounts)
+    const minAmount = Math.min(...amounts)
+    const TotalMonthAmount = amounts.reduce((total,amount) => total+parseFloat(amount),0).toFixed(2);
+
+    const backgroundColors = amounts.map(amount => 
+        calculateGradientColor(amount,maxAmount,minAmount)
+    );
+
+    const pieChartData = {
+        labels: categories,
+        datasets: [
+            {
+                label: "Monthly Expenses",
+                data: amounts,
+                backgroundColor: backgroundColors,
+                hoverOffset: 4,
+            }
+        ]
+    }
+
+    // LineChart ----------------------------------
+
+
+    const organizedData = {};
+    getAllExpenses.forEach(expense => {
+        const { date, month, year, categoryname, amount } = expense;
+        const key = `${year}-${month}-${date}`; // Use a unique key for each date
+        if (!organizedData[key]) {
+            organizedData[key] = {};
+        }
+        if (!organizedData[key][categoryname]) {
+            organizedData[key][categoryname] = amount;
+        } else {
+            organizedData[key][categoryname] += amount;
+        }
+    });
+
+
+    //Function to generate line chart data
+
+    const categorynames = Object.values(organizedData)
+        .flatMap(entry => Object.keys(entry))
+        .filter((value, index, self) => self.indexOf(value) === index);
+
+    const labels = Object.keys(organizedData)
+
+    const getRandomColor = () => {
+        // Generate random RGB values
+        const r = Math.floor(Math.random() * 256);
+        const g = Math.floor(Math.random() * 256);
+        const b = Math.floor(Math.random() * 256);
+        // Return color string in RGBA format
+        return `rgba(${r},${g},${b},0.6)`;
+    };
+
+    let datasets = [];
+
+    // Iterate over meal types
+    categorynames.forEach(type => {
+      let data = [];
+
+      // Iterate over dates
+      Object.keys(organizedData).forEach(date => {
+        // Check if the meal type exists for the current date
+        const value = organizedData[date][type] ? parseFloat(organizedData[date][type]) : 0;
+        data.push(value);
+      });
+
+      // Push dataset object
+      datasets.push({
+        label: type,
+        data: data,
+        borderColor: getRandomColor() // Assigning different border color for Breakfast and Lunch
+      });
+    });
+
+    const generateLineChartData = {};
+    generateLineChartData.labels = labels;
+    generateLineChartData.datasets = datasets.map((dataset, index) => ({
+        label: dataset.label,
+        data: dataset.data,
+        borderColor: dataset.borderColor,
+    }));
+
+    const options = {};
+
+// Rest of your component code...
+
+    return (
+        <Fragment>
+        <div className="container">
+        {/* <div className="pt-2 container"> */}
+            <div className="card my-2">
+                <div className="card-header bg-primary text-white">
+                    <h4 className="mb-0 text-center">Current Month Information</h4>
+                </div>
+                <div className="card-body">
+                    <div className="row">
+                        <div className="col-12 col-md-6 mb-3 mb-md-0">
+                            <p className="p mb-0">Month: <span className="text-primary">{currentMonthName.monthName}</span></p>
+                        </div>
+                        <div className="col-12 col-md-6 text-md-right">
+                            {getCurrentMonthIncome.amount && <p className="p mb-2 mb-md-0">Month Income: &#x20B9;<span className="text-success">{getCurrentMonthIncome.amount}</span></p>}
+                            <p className="p mb-2 mb-md-0">Expenses: &#x20B9;<span className="text-danger">{TotalMonthAmount}</span></p>
+                            {getCurrentMonthIncome.amount && <p className="p mb-0">Saving: &#x20B9;<span className="text-success">{getCurrentMonthIncome.amount-TotalMonthAmount}</span></p>}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {/* </div> */}
+        <div className="card my-2">
+        <div className="card-header bg-primary text-white">
+            <h4 className="mb-0 text-center">Charts</h4>
+        </div>
+        <div id="carouselExampleControls" className="carousel slide py-2" data-ride="carousel">
+            <div className="carousel-inner">
+                <div className="carousel-item active">
+                    <div>
+                    <Pie data={pieChartData} className="d-block h-100 w-100" alt="First slide" />
+                    </div>
+                </div>
+                <div className="carousel-item">
+                    <div className="parent-container pt-4" style={{ height: "500px" }}>
+                        <Line options={options} data={generateLineChartData} className="d-block" alt="Second slide" />
+                    </div>
+                </div>
+                <div className="carousel-item">
+                    <Pie data={pieChartData} className="d-block w-100" alt="Third slide" />
+                </div>
+            </div>
+            <a className="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span className="sr-only">Previous</span>
+            </a>
+            <a className="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                <span className="sr-only">Next</span>
+            </a>
+        </div>
+        </div>
+        </div>
+        </Fragment>
+    );
+}
+
+export default Home;

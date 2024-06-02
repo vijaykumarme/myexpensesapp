@@ -1,12 +1,16 @@
-import React,{useState,useEffect,useContext} from "react";
+import React,{useState,useEffect,useContext, Fragment} from "react";
 import axios from "axios";
 import Swal from 'sweetalert2';
 import {useNavigate} from 'react-router-dom';
 import AppContext from "../AppContext";
 
+import "./History.css"
+
 
 
 const History = () => {
+
+    const {userName} = useContext(AppContext)
 
     const {allExpenses} = useContext(AppContext)
     const {setAllExpenses} = useContext(AppContext)
@@ -19,13 +23,10 @@ const History = () => {
 
     const navigateTo = useNavigate();
 
-    //const [allExpenses, setAllExpenses] = useState([]);
-
-
     useEffect(() => {
         const getAllRecords = async () => {
             try {
-                const response = await axios.get("http://localhost:5000/getexpenses");
+                const response = await axios.post("http://localhost:5000/getexpenses",{userName});
                 console.log(response.data)
                 setAllExpenses(response.data)
             }catch(err) {
@@ -83,63 +84,63 @@ const History = () => {
           setAllExpenses(allExpenses.filter(allExpenses => allExpenses.expenseid !== id))
     }
 
-
     const [search, setSearch] = useState("")
 
     return(
-        <div>
-            <h3 className="text-center pt-2">History</h3>
-            <form className="d-flex">
-                <input onChange={e => setSearch(e.target.value)} className="form-control mt-3 mx-2" />
-            </form>
-            <table class="table table-striped table-dark table-bordered mt-3">
-            <thead>
-                <tr>
-                <th scope="col">SI.NO</th>
-                <th scope="col">Date</th>
-                <th scope="col">Month</th>
-                <th scope="col">Year</th>
-                <th scope="col">Category</th>
-                <th scope="col">Name</th>
-                <th scope="col">Place</th>
-                <th scope="col">Paymentmethod</th>
-                <th scope="col">Amount</th>
-                <th scope="col"></th>
-                <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-                {allExpenses.filter((item) => {
-                    return (
-                        search.toLocaleLowerCase() === '' ? item : item.date.toString().toLocaleLowerCase().includes(search)||
-                        search.toLocaleLowerCase() === '' ? item : item.month.toString().toLocaleLowerCase().includes(search)||
-                        search.toLocaleLowerCase() === '' ? item : item.year.toString().toLocaleLowerCase().includes(search)||
-                        search.toLocaleLowerCase() === '' ? item : item.description.toString().toLocaleLowerCase().includes(search)||
-                        search.toLocaleLowerCase() === '' ? item : item.place.toString().toLocaleLowerCase().includes(search)||
-                        search.toLocaleLowerCase() === '' ? item : item.paymentmethod.toString().toLocaleLowerCase().includes(search)||
-                        search.toLocaleLowerCase() === '' ? item : item.amount.toString().toLocaleLowerCase().includes(search)
+        <Fragment>
+            <div className="container">
+                <h3 className="text-center pt-2">History</h3>
+                <form className="d-flex">
+                    <input onChange={e => setSearch(e.target.value)} className="form-control mt-3 mx-2 responsive-font" />
+                </form>
+                <div className="table-responsive">
+                    <table className="table table-striped table-dark table-bordered mt-3 small">
+                        <thead>
+                            <tr>
+                                <th scope="col" className="responsive-font">SI.NO</th>
+                                <th scope="col" className="responsive-font">Date</th>
+                                <th scope="col" className="responsive-font">Category</th>
+                                <th scope="col" className="responsive-font">Name</th>
+                                <th scope="col" className="responsive-font">Place</th>
+                                <th scope="col" className="responsive-font">Payment Method</th>
+                                <th scope="col" className="responsive-font">Amount</th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {allExpenses.filter((item) => {
+                                return (
+                                    search.toLocaleLowerCase() === '' ? item : item.date.toString().toLocaleLowerCase().includes(search) ||
+                                    search.toLocaleLowerCase() === '' ? item : item.month.toString().toLocaleLowerCase().includes(search) ||
+                                    search.toLocaleLowerCase() === '' ? item : item.year.toString().toLocaleLowerCase().includes(search) ||
+                                    search.toLocaleLowerCase() === '' ? item : item.description.toString().toLocaleLowerCase().includes(search) ||
+                                    search.toLocaleLowerCase() === '' ? item : item.place.toString().toLocaleLowerCase().includes(search) ||
+                                    search.toLocaleLowerCase() === '' ? item : item.paymentmethod.toString().toLocaleLowerCase().includes(search) ||
+                                    search.toLocaleLowerCase() === '' ? item : item.amount.toString().toLocaleLowerCase().includes(search)
+                                );
+                            }).map((expense, index) => {
+                                return (
+                                    <tr key={expense.expenseid}>
+                                        <th scope="row" className="responsive-font">{index + 1}</th>
+                                        <td className="text-nowrap responsive-font">{`${expense.date}-${expense.month}-${expense.year}`}</td>
+                                        <td className="responsive-font">{expense.categoryname}</td>
+                                        <td className="responsive-font">{expense.description}</td>
+                                        <td className="responsive-font">{expense.place}</td>
+                                        <td className="responsive-font">{expense.paymentmethod}</td>
+                                        <td className="responsive-font">{expense.amount}</td>
+                                        <td className="responsive-font"><i onClick={() => editExpensesHandler(expense.expenseid)} className="fa-solid fa-pen-to-square" style={{ cursor: 'pointer' }}></i></td>
+                                        <td className="responsive-font"><i onClick={() => deleteExpensesHandler(expense.expenseid)} className="fa-solid fa-trash" style={{ cursor: 'pointer' }}></i></td>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </Fragment>
 
-                );
-                }).map((expense,index) => {
-                    return(
-                     <tr key={expense.expenseid}>
-                     <th scope="row">{index+1}</th>
-                     <td>{expense.date}</td>
-                     <td>{expense.month}</td>
-                     <td>{expense.year}</td>
-                     <td>{expense.categoryname}</td>
-                     <td>{expense.description}</td>
-                     <td>{expense.place}</td>
-                     <td>{expense.paymentmethod}</td>
-                     <td>{expense.amount}</td>
-                     <td><i onClick={() => editExpensesHandler(expense.expenseid)} class="fa-solid fa-pen-to-square" style={{cursor : 'pointer'}}></i></td>
-                     <td><i onClick={() => deleteExpensesHandler(expense.expenseid)} class="fa-solid fa-trash" style={{cursor : 'pointer'}}></i></td>
-                     </tr>
-                    )
-            })}
-            </tbody>
-        </table>
-        </div>
+
     )
 }
 

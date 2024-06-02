@@ -1,6 +1,7 @@
-import React, { Fragment,useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import React, { Fragment,useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
+import axios from 'axios';
 
 
 import LoginPage from './components/LoginPage';
@@ -12,31 +13,61 @@ import History from './components/History';
 import Dashboard from './components/Dashboard';
 import EditExpenses from './components/EditExpenses';
 import AppContext from './AppContext';
+import Home from './components/Home';
+import Advance from './components/Advance';
 
 function App() {
 
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [allExpenses, setAllExpenses] = useState([])
   const [expensesid, setExpensesid] = useState("")
   const [editExpense, setEditExpense] = useState([])
   const [categories, setCategories] = useState([])
+  const [userName, setUsername] = useState("");
+  const [useremail,setUseremail] = useState("");
+
+  async function isAuth() {
+    try {
+      const response = await fetch("http://localhost:5000/auth/is-verify",{
+        method: "GET",
+        headers: {token: localStorage.token}
+      })
+
+      const parseRes = await response.json();
+
+      parseRes === true ? setIsAuthenticated(true) : setIsAuthenticated(false)
+
+
+    } catch(err) {
+      console.err(err.message);
+    }
+  }
+
+  useEffect(() => {
+    isAuth();
+  })
+
 
   return (
-    <AppContext.Provider value={{allExpenses, setAllExpenses, expensesid, setExpensesid, editExpense, setEditExpense, categories, setCategories}}>
+    <AppContext.Provider value={{ isAuthenticated,setIsAuthenticated,allExpenses, setAllExpenses, expensesid, setExpensesid, editExpense, setEditExpense, categories, setCategories, userName, setUsername, useremail,setUseremail}}>
+      <Fragment>
       <div className="Container">
         <BrowserRouter>
           <Header />
           <Routes>
-            <Route exact path="/" element={<LoginPage />} />
-            <Route path="/LoginPage" element={<LoginPage />} />
-            <Route path="/SigninPage" element={<SignInPage />} />
-            <Route path="/CreateExpenses" element={<CreateExpenses />} />
-            <Route path="/History" element={<History />} />
-            <Route path="/Dashboard" element={<Dashboard />} />
-            <Route path="/editExpenses" element={<EditExpenses expensesid={expensesid} />} />
+            <Route exact path="/" element={isAuthenticated ? (<Home />) : (<Navigate to="/LoginPage" />) } />
+            <Route path="/LoginPage" element={!isAuthenticated ? (<LoginPage />) : (<Navigate to="/" />)} />
+            <Route path="/SigninPage" element={!isAuthenticated ? (<SignInPage />) : (<Navigate to="/" />)} />
+            <Route path="/CreateExpenses" element={isAuthenticated ? (<CreateExpenses />) : (<Navigate to="/" />)} />
+            <Route path="/History" element={isAuthenticated ? (<History />) : (<Navigate to="/" />)} />
+            <Route path="/Dashboard" element={isAuthenticated ? (<Dashboard />) : (<Navigate to="/" />)} />
+            <Route path="/Advance" element={isAuthenticated ? (<Advance />) : (<Navigate to="/" />)} />
+            <Route path="/editExpenses" element={isAuthenticated ? (<EditExpenses expensesid={expensesid} />) : (<Navigate to="/" />)} />
           </Routes>
           <Footer />
         </BrowserRouter>
       </div>
+      </Fragment>
     </AppContext.Provider>
   );
 }
