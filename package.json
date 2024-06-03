@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "This is the PERN application which tracks the daily expenses",
   "main": "index.js",
+  "devDependencies": {},
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
