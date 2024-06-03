@@ -16,17 +16,26 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - name: Install dependencies
+
+    - name: Install client dependencies
       run: |
-        cd myexpensesapp
+        cd myexpensesapp/myexpensesapp/client
         ls -la
         npm ci
-    - name: Build the project
+    
+    - name: Build client
       run: |
-        cd myexpensesapp
+        cd myexpensesapp/myexpensesapp/client
         npm run build --if-present
+
+    - name: Install server dependencies
+      run: |
+        cd myexpensesapp/myexpensesapp/server
+        ls -la
+        npm ci
