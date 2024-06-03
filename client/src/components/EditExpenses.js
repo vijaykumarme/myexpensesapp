@@ -58,7 +58,7 @@ const EditExpenses = () => {
             const currentMonth = dateObject.getMonth() + 1;
             const currentYear = dateObject.getFullYear();
     
-            const response = await axios.put(`http://localhost:5000/editexpense/${expensesid}`, {
+            const response = await axios.put(`http://localhost:5000/api/editexpense/${expensesid}`, {
                 categoryName,
                 description,
                 place,

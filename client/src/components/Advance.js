@@ -31,7 +31,7 @@ const Advance = () => {
     const categorySumitHandler = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:5000/addCategory", { category });
+            const response = await axios.post("http://localhost:5000/api/addCategory", { category });
             if (response.data !== 0) {
                 setAddCategory(false);
                 Swal.fire({
@@ -77,7 +77,7 @@ const Advance = () => {
     const MonthlyIncomeSumitHandler = async(e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:5000/addmonthlyincome", {
+            const response = await axios.post("http://localhost:5000/api/addmonthlyincome", {
                 year,
                 month,
                 amount,

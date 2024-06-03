@@ -26,7 +26,7 @@ const History = () => {
     useEffect(() => {
         const getAllRecords = async () => {
             try {
-                const response = await axios.post("http://localhost:5000/getexpenses",{userName});
+                const response = await axios.post("http://localhost:5000/api/getexpenses",{userName});
                 setAllExpenses(response.data)
             }catch(err) {
                 console.log(err.message)
@@ -38,9 +38,9 @@ const History = () => {
     const editExpensesHandler = async (expenseid) => {
         setExpensesid(expenseid)
         try {
-            const response = await axios.get(`http://localhost:5000/getexpense/${expenseid}`)
+            const response = await axios.get(`http://localhost:5000/api/getexpense/${expenseid}`)
             setEditExpense(response.data)
-            const getcaregories = await axios.get("http://localhost:5000/categories")
+            const getcaregories = await axios.get("http://localhost:5000/api/categories")
             setCategories(getcaregories.data)
             navigateTo("/editExpenses")
         }catch(err) {
@@ -52,7 +52,7 @@ const History = () => {
 
         const deleteHandler = () => {
             try {
-                const deleteExpenses = axios.delete(`http://localhost:5000/deleteExpense/${id}`)
+                const deleteExpenses = axios.delete(`http://localhost:5000/api/deleteExpense/${id}`)
             } catch(err) {
                 console.log(err.message)
             }

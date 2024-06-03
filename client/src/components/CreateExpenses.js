@@ -26,7 +26,7 @@ const CreateExpenses = () => {
     useEffect(() => {
         const getAllCategories = async () => {
             try {
-                const allCategories = await axios.get("http://localhost:5000/categories")
+                const allCategories = await axios.get("http://localhost:5000/api/categories")
                 setCategories(allCategories.data)
             }catch (err) {
                 console.log(err.message)
@@ -45,7 +45,7 @@ const CreateExpenses = () => {
         const currentYear = dateObject.getFullYear();
         const userid = userName;
         try {
-            const createExpenses = await axios.post("http://localhost:5000/createexpense",{
+            const createExpenses = await axios.post("http://localhost:5000/api/createexpense",{
                 userid,categoryName,Amount,description,Place,paymentMethod,currentMonth,currentYear,date
             })
             Swal.fire({

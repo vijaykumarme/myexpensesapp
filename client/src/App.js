@@ -41,7 +41,7 @@ function App() {
 
 
     } catch(err) {
-      console.err(err.message);
+      console.error(err.message);
     }
   }
 

@@ -14,7 +14,7 @@ const UserAllMonthsIncome = () => {
 
     async function getAllMonthsIncome() {
         try {
-            const response = await axios.post("http://localhost:5000/getallmonthsincome", { useremail });
+            const response = await axios.post("http://localhost:5000/api/getallmonthsincome", { useremail });
             setMonthlyIncome(response.data);
         } catch (err) {
             console.error(err.message);
@@ -31,7 +31,7 @@ const UserAllMonthsIncome = () => {
         // Implement the delete functionality here
             const deletemonthincome = async() => {
                 try {
-                    const deleteIncome = await axios.delete(`http://localhost:5000/deletemonthincome/${incomeid}`)
+                    const deleteIncome = await axios.delete(`http://localhost:5000/api/deletemonthincome/${incomeid}`)
                 } catch(err) {
                     console.error(err.message)
                 }

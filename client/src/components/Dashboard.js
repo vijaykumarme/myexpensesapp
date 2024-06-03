@@ -35,7 +35,7 @@ const Dashboard = () => {
     useEffect(() => {
         const getexpensesbymonthcategory = async () => {
             try {
-                const response = await axios.post("http://localhost:5000/getexpensesbymonthcategory", { userName });
+                const response = await axios.post("http://localhost:5000/api/getexpensesbymonthcategory", { userName });
                 setGetMonthCategoryExpenses(response.data);
             } catch (err) {
                 console.log(err.message);
