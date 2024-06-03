@@ -5,6 +5,8 @@
 //   query: (text,params) => pool.query(text,params)
 // }
 
+// With credentials
+
 const Pool = require("pg").Pool;
 
 const pool = new Pool({

@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -222,6 +223,8 @@ app.delete("/deletemonthincome/:id", async(req,res) => {
 
 
 //Server Port
-app.listen(5000, () => {
-  console.log("Server is running on port 5000");
+const port = process.env.PORT || 5000
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });

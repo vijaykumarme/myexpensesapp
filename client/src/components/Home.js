@@ -200,7 +200,7 @@ const Home = () => {
         borderColor: dataset.borderColor,
     }));
 
-    const options = {};
+    //const options = {};
 
 // Rest of your component code...
 
