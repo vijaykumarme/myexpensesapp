@@ -49,6 +49,11 @@ const MonthNames = [
 
 const Home = () => {
 
+    const baseURL =
+    process.env.NODE_ENV === "production"
+        ? "/"
+        : "http://localhost:3000/todos";
+
     const {setUsername} = useContext(AppContext)
     const {userName} = useContext(AppContext)
     const {setUseremail} = useContext(AppContext)
@@ -67,11 +72,11 @@ const Home = () => {
 
     async function getCurrentMonthExpensesFunc () {
         try {
-            const responsemonthly = await axios.post("http://localhost:5000/api/getcurrentmonthexpenses",{currentMonth,currentYear,userName});
+            const responsemonthly = await axios.post(`${baseURL}api/getcurrentmonthexpenses`,{currentMonth,currentYear,userName});
             setGetCurrentMonthExpenes(responsemonthly.data)
-            const responseall = await axios.post("http://localhost:5000/api/getmonthexpenses",{userName});
+            const responseall = await axios.post(`${baseURL}api/getmonthexpenses`,{userName});
             setGetAllExpenses(responseall.data)
-            const getcurrentincome = await axios.post("http://localhost:5000/api/getmonthlyincome",{currentYear,currentMonth,useremail});
+            const getcurrentincome = await axios.post(`${baseURL}api/getmonthlyincome`,{currentYear,currentMonth,useremail});
             setGetCurrentMonthIncome(getcurrentincome.data)
         } catch(err) {
             console.log(err.message)
@@ -80,7 +85,7 @@ const Home = () => {
 
     async function getName() {
         try {
-            const response = await fetch("http://localhost:5000/api/userdashboard/",{
+            const response = await fetch(`${baseURL}api/userdashboard/`,{
                 method: "GET",
                 headers: {token: localStorage.token}
             })
