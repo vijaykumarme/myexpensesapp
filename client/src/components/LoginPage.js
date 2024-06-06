@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 
 //components
 import AppContext from "../AppContext";
+import ApiURL from "../api/ApiURL";
 
 const LoginPage = () => {
 
@@ -17,11 +18,16 @@ const LoginPage = () => {
         try {
             const body = {email,password}
 
-            const response = await fetch("http://mynewexpenses.xyz/api/auth/login",{
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(body)
-            })
+            // const response = await fetch("http://mynewexpenses.xyz/api/auth/login",{
+            //     method: "POST",
+            //     headers: {"Content-Type": "application/json"},
+            //     body: JSON.stringify(body)
+            // })
+
+            const response = await api.post('/api/auth/login', body, {
+                headers: { "Content-Type": "application/json" }
+            });
+
             const parseRes = await response.json();
 
             if(parseRes.token) {

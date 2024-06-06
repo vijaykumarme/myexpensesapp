@@ -4,7 +4,9 @@ import Swal from 'sweetalert2';
 import {useNavigate} from 'react-router-dom';
 import AppContext from "../AppContext";
 
+// components
 import "./History.css"
+import ApiURL from "../api/ApiURL";
 
 
 
@@ -26,7 +28,7 @@ const History = () => {
     useEffect(() => {
         const getAllRecords = async () => {
             try {
-                const response = await axios.post("http://localhost:5000/api/getexpenses",{userName});
+                const response = await api.post("/api/getexpenses",{userName});
                 setAllExpenses(response.data)
             }catch(err) {
                 console.log(err.message)
@@ -38,9 +40,9 @@ const History = () => {
     const editExpensesHandler = async (expenseid) => {
         setExpensesid(expenseid)
         try {
-            const response = await axios.get(`http://localhost:5000/api/getexpense/${expenseid}`)
+            const response = await api.get(`/api/getexpense/${expenseid}`)
             setEditExpense(response.data)
-            const getcaregories = await axios.get("http://localhost:5000/api/categories")
+            const getcaregories = await api.get("/api/categories")
             setCategories(getcaregories.data)
             navigateTo("/editExpenses")
         }catch(err) {
@@ -52,7 +54,7 @@ const History = () => {
 
         const deleteHandler = () => {
             try {
-                const deleteExpenses = axios.delete(`http://localhost:5000/api/deleteExpense/${id}`)
+                const deleteExpenses = api.delete(`/api/deleteExpense/${id}`)
             } catch(err) {
                 console.log(err.message)
             }

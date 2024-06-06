@@ -1,9 +1,11 @@
 import axios from 'axios';
 
-const BaseURL = process.env.NODE_ENV = "production"
-    ? "http://hocalhost:5000"
-    : "http://localhost:5000"
+const baseURL = process.env.NODE_ENV === "production"
+    ? "https://myexpenses.xyz"
+    : "http://localhost:5000";
 
-export default axios.create({
-    BaseURL,
-})
+const api = axios.create({
+    baseURL,
+});
+
+export default api;

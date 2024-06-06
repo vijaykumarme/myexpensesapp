@@ -16,6 +16,7 @@ import AppContext from './AppContext';
 import Home from './components/Home';
 import Advance from './components/Advance';
 import UserAllMonthsIncome from './components/UserAllMonthsIncome';
+import ApiURL from './api/ApiURL';
 
 
 function App() {
@@ -30,10 +31,14 @@ function App() {
 
   async function isAuth() {
     try {
-      const response = await fetch("http://mynewexpenses.xyz/api/auth/is-verify",{
-        method: "GET",
-        headers: {token: localStorage.token}
-      })
+      // const response = await fetch("http://mynewexpenses.xyz/api/auth/is-verify",{
+      //   method: "GET",
+      //   headers: {token: localStorage.token}
+      // })
+
+      const response = await api.get('/api/auth/is-verify', {
+        headers: { token: localStorage.token }
+      });
 
       const parseRes = await response.json();
 

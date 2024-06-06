@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 
 // Components
 import AppContext from "../AppContext";
+import ApiURL from "../api/ApiURL";
 
 const Advance = () => {
 
@@ -31,7 +32,7 @@ const Advance = () => {
     const categorySumitHandler = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:5000/api/addCategory", { category });
+            const response = await api.post("/api/addCategory", { category });
             if (response.data !== 0) {
                 setAddCategory(false);
                 Swal.fire({
@@ -77,7 +78,7 @@ const Advance = () => {
     const MonthlyIncomeSumitHandler = async(e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:5000/api/addmonthlyincome", {
+            const response = await api.post("/api/addmonthlyincome", {
                 year,
                 month,
                 amount,

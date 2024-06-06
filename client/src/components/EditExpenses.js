@@ -4,6 +4,10 @@ import AppContext from "../AppContext";
 import {useNavigate} from 'react-router-dom'
 import Swal from 'sweetalert2';
 
+// components
+
+import ApiURL from "../api/ApiURL";
+
 const EditExpenses = () => {
 
     const navigateTo = useNavigate();
@@ -58,7 +62,7 @@ const EditExpenses = () => {
             const currentMonth = dateObject.getMonth() + 1;
             const currentYear = dateObject.getFullYear();
     
-            const response = await axios.put(`http://localhost:5000/api/editexpense/${expensesid}`, {
+            const response = await api.put(`/api/editexpense/${expensesid}`, {
                 categoryName,
                 description,
                 place,

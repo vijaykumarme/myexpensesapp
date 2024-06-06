@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 
 //components
 import AppContext from "../AppContext";
+import ApiURL from "../api/ApiURL";
 
 const CreateExpenses = () => {
 
@@ -26,7 +27,7 @@ const CreateExpenses = () => {
     useEffect(() => {
         const getAllCategories = async () => {
             try {
-                const allCategories = await axios.get("http://localhost:5000/api/categories")
+                const allCategories = await api.get("/api/categories")
                 setCategories(allCategories.data)
             }catch (err) {
                 console.log(err.message)
@@ -45,7 +46,7 @@ const CreateExpenses = () => {
         const currentYear = dateObject.getFullYear();
         const userid = userName;
         try {
-            const createExpenses = await axios.post("http://localhost:5000/api/createexpense",{
+            const createExpenses = await api.post("/api/createexpense",{
                 userid,categoryName,Amount,description,Place,paymentMethod,currentMonth,currentYear,date
             })
             Swal.fire({

@@ -14,6 +14,7 @@ import {
 import Select from 'react-select';
 
 import AppContext from "../AppContext";
+import ApiURL from "../api/ApiURL";
 
 ChartJS.register(
     CategoryScale,
@@ -35,7 +36,7 @@ const Dashboard = () => {
     useEffect(() => {
         const getexpensesbymonthcategory = async () => {
             try {
-                const response = await axios.post("http://localhost:5000/api/getexpensesbymonthcategory", { userName });
+                const response = await api.post("/api/getexpensesbymonthcategory", { userName });
                 setGetMonthCategoryExpenses(response.data);
             } catch (err) {
                 console.log(err.message);

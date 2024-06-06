@@ -17,6 +17,8 @@ import moment from 'moment';
 
 //components
 import AppContext from "../AppContext";
+import ApiURL from "../api/ApiURL"
+import api from "../api/ApiURL";
 
 
 
@@ -49,11 +51,6 @@ const MonthNames = [
 
 const Home = () => {
 
-    const baseURL =
-    process.env.NODE_ENV === "production"
-        ? "/"
-        : "http://localhost:3000/todos";
-
     const {setUsername} = useContext(AppContext)
     const {userName} = useContext(AppContext)
     const {setUseremail} = useContext(AppContext)
@@ -72,11 +69,11 @@ const Home = () => {
 
     async function getCurrentMonthExpensesFunc () {
         try {
-            const responsemonthly = await axios.post(`${baseURL}api/getcurrentmonthexpenses`,{currentMonth,currentYear,userName});
+            const responsemonthly = await api.post("/api/getcurrentmonthexpenses",{currentMonth,currentYear,userName});
             setGetCurrentMonthExpenes(responsemonthly.data)
-            const responseall = await axios.post(`${baseURL}api/getmonthexpenses`,{userName});
+            const responseall = await api.post("/api/getmonthexpenses",{userName});
             setGetAllExpenses(responseall.data)
-            const getcurrentincome = await axios.post(`${baseURL}api/getmonthlyincome`,{currentYear,currentMonth,useremail});
+            const getcurrentincome = await api.post("/api/getmonthlyincome",{currentYear,currentMonth,useremail});
             setGetCurrentMonthIncome(getcurrentincome.data)
         } catch(err) {
             console.log(err.message)
@@ -85,10 +82,16 @@ const Home = () => {
 
     async function getName() {
         try {
-            const response = await fetch("http://mynewexpenses.xyz/api/userdashboard/",{
-                method: "GET",
-                headers: {token: localStorage.token}
-            })
+            // const response = await fetch("http://mynewexpenses.xyz/api/userdashboard/",{
+            //     method: "GET",
+            //     headers: {token: localStorage.token}
+            // })
+
+            const response = await api.get('/api/userdashboard/', {
+                headers: { token: localStorage.token }
+            });
+
+
             const parseRes = await response.json();
             const currentUsername = parseRes.username
             const currentUserEmail = parseRes.useremail
