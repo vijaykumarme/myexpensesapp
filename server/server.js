@@ -7,6 +7,12 @@ const pool = require("./db");
 //middleware
 
 app.use(express.json());
+
+// app.use(cors({
+//   origin: '*', // Or specify the allowed origins
+//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+//   allowedHeaders: ['Content-Type', 'Authorization']
+// }));
 app.use(cors());
 
 //Routes

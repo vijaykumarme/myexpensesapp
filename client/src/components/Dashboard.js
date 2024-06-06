@@ -78,7 +78,7 @@ const Dashboard = () => {
             minColor[1] + (maxColor[1] - minColor[1]) * (value - minValue) / (maxValue - minValue),
             minColor[2] + (maxColor[2] - minColor[2]) * (value - minValue) / (maxValue - minValue)
         ];
-        return `rgba(${midColor.join(',')}, 0.6)`;
+        return `rgba(${midColor.join(',')}, 0.9)`;
     }
 
     const categoryLabels = [];

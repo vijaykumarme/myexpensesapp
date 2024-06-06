@@ -26,7 +26,6 @@ const LoginPage = () => {
 
             if(parseRes.token) {
                 localStorage.setItem("token",parseRes.token)
-                setIsAuthenticated(true);
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
@@ -34,10 +33,25 @@ const LoginPage = () => {
                     showConfirmButton: false,
                     timer: 1500
                   });
+                setIsAuthenticated(true); 
             } else {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Username or Password Incorrect",
+                    showConfirmButton: false,
+                    timer: 1500
+                  });
                 setIsAuthenticated(false);
             }
         } catch(err) {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Server Error",
+                showConfirmButton: false,
+                timer: 1500
+              });
             console.error(err.message)
         }
     }
