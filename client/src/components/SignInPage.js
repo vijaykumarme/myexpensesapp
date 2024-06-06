@@ -30,7 +30,7 @@ const SignInPage = () => {
                 headers: { "Content-Type": "application/json" }
             });
 
-            const parseRes = await response.json();
+            const parseRes = response.data;
 
             if(parseRes.token) {
                 localStorage.setItem("token",parseRes.token)

@@ -40,7 +40,7 @@ function App() {
         headers: { token: localStorage.token }
       });
 
-      const parseRes = await response.json();
+      const parseRes = response.data
 
       parseRes === true ? setIsAuthenticated(true) : setIsAuthenticated(false)
 

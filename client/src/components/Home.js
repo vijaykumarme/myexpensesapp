@@ -91,7 +91,7 @@ const Home = () => {
             });
 
 
-            const parseRes = await response.json();
+            const parseRes = response.data
             const currentUsername = parseRes.username
             const currentUserEmail = parseRes.useremail
             setUsername(currentUsername)
