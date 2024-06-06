@@ -8,12 +8,20 @@ const pool = require("./db");
 
 app.use(express.json());
 
+app.use(cors({
+  origin: '*',
+  methods: 'GET,POST,PUT,DELETE',
+  allowedHeaders: 'Content-Type,Authorization,token'
+}));
+
+app.options('*', cors());
+
 // app.use(cors({
-//   origin: '*', // Or specify the allowed origins
-//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//   allowedHeaders: ['Content-Type', 'Authorization']
+//   origin: '*',
+//   methods: 'GET,POST,PUT,DELETE',
+//   allowedHeaders: 'Content-Type,Authorization'
 // }));
-app.use(cors());
+//app.use(cors());
 
 //Routes
 
