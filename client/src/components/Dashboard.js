@@ -14,7 +14,7 @@ import {
 import Select from 'react-select';
 
 import AppContext from "../AppContext";
-import ApiURL from "../api/ApiURL";
+import api from "../api/ApiURL";
 
 ChartJS.register(
     CategoryScale,

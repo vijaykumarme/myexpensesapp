@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 // Components
 import AppContext from "../AppContext";
-import ApiURL from "../api/ApiURL";
+import api from "../api/ApiURL";
 
 const Advance = () => {
 

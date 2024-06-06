@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 //components
 import AppContext from "../AppContext";
+import api from "../api/ApiURL";
 
 const SignInPage = () => {
 
@@ -19,11 +20,15 @@ const SignInPage = () => {
 
             const body = {email,password,name}
 
-            const response = await fetch("http://localhost:5000/api/auth/register",{
-                method: "POST",
-                headers: { "Content-Type": "application/json"},
-                body: JSON.stringify(body)
-            })
+            // const response = await fetch("http://localhost:5000/api/auth/register",{
+            //     method: "POST",
+            //     headers: { "Content-Type": "application/json"},
+            //     body: JSON.stringify(body)
+            // })
+
+            const response = await api.post('/api/auth/register', body, {
+                headers: { "Content-Type": "application/json" }
+            });
 
             const parseRes = await response.json();
 

@@ -17,7 +17,6 @@ import moment from 'moment';
 
 //components
 import AppContext from "../AppContext";
-import ApiURL from "../api/ApiURL"
 import api from "../api/ApiURL";
 
 

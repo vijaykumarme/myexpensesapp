@@ -6,8 +6,7 @@ import AppContext from "../AppContext";
 
 // components
 import "./History.css"
-import ApiURL from "../api/ApiURL";
-
+import api from "../api/ApiURL";
 
 
 const History = () => {

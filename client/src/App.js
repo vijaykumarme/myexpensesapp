@@ -16,7 +16,7 @@ import AppContext from './AppContext';
 import Home from './components/Home';
 import Advance from './components/Advance';
 import UserAllMonthsIncome from './components/UserAllMonthsIncome';
-import ApiURL from './api/ApiURL';
+import api from './api/ApiURL';
 
 
 function App() {

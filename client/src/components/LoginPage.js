@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 
 //components
 import AppContext from "../AppContext";
-import ApiURL from "../api/ApiURL";
+import api from "../api/ApiURL";
 
 const LoginPage = () => {
 
