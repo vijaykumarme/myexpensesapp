@@ -85,7 +85,7 @@ const Home = () => {
 
     async function getName() {
         try {
-            const response = await fetch(`${baseURL}api/userdashboard/`,{
+            const response = await fetch("http://mynewexpenses.xyz/api/userdashboard/",{
                 method: "GET",
                 headers: {token: localStorage.token}
             })
