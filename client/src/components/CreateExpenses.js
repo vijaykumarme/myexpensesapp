@@ -51,14 +51,14 @@ const CreateExpenses = () => {
             })
             Swal.fire({
                 title: "Created!",
-                text: "Your file has been deleted.",
+                text: "Record created.",
                 icon: "success"
               });
             NavigateTo("/")
         } catch(err) {
             Swal.fire({
                 title: "Error!",
-                text: "Your file has been deleted.",
+                text: "Failed to created record.",
                 icon: "error"
               });
             NavigateTo("/")
