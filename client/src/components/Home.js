@@ -69,6 +69,8 @@ const Home = () => {
     async function getCurrentMonthExpensesFunc () {
         try {
             const responsemonthly = await api.post("/api/getcurrentmonthexpenses",{currentMonth,currentYear,useremail});
+            console.log(useremail)
+            console.log(responsemonthly.data)
             setGetCurrentMonthExpenes(responsemonthly.data)
             const responseall = await api.post("/api/getmonthexpenses",{useremail});
             setGetAllExpenses(responseall.data)
@@ -242,6 +244,12 @@ const Home = () => {
             }
         ]
     };
+
+    // const [getCurrentMonthExpenses, setGetCurrentMonthExpenes] = useState([]);
+    // const [getAllExpenses, setGetAllExpenses] = useState([])
+    // const [getCurrentMonthIncome, setGetCurrentMonthIncome] = useState([])
+
+    console.log(getCurrentMonthExpenses)
 
     return (
         <Fragment>

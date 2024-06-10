@@ -45,7 +45,7 @@ const CreateExpenses = () => {
         const currentDay = dateObject.getDate();
         const currentMonth = dateObject.getMonth()+1;
         const currentYear = dateObject.getFullYear();
-        const userid = userName;
+        const userid = useremail;
         try {
             const createExpenses = await api.post("/api/createexpense",{
                 userid,categoryName,Amount,description,Place,paymentMethod,currentMonth,currentYear,date
