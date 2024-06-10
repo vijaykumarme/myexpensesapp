@@ -68,9 +68,9 @@ const Home = () => {
 
     async function getCurrentMonthExpensesFunc () {
         try {
-            const responsemonthly = await api.post("/api/getcurrentmonthexpenses",{currentMonth,currentYear,userName});
+            const responsemonthly = await api.post("/api/getcurrentmonthexpenses",{currentMonth,currentYear,useremail});
             setGetCurrentMonthExpenes(responsemonthly.data)
-            const responseall = await api.post("/api/getmonthexpenses",{userName});
+            const responseall = await api.post("/api/getmonthexpenses",{useremail});
             setGetAllExpenses(responseall.data)
             const getcurrentincome = await api.post("/api/getmonthlyincome",{currentYear,currentMonth,useremail});
             setGetCurrentMonthIncome(getcurrentincome.data)
@@ -243,7 +243,6 @@ const Home = () => {
         ]
     };
 
-
     return (
         <Fragment>
         <div className="container">
@@ -283,7 +282,9 @@ const Home = () => {
                     </div>
                 </div>
                 {/* <div className="carousel-item">
-                    <Pie data={pieChartData} className="d-block w-100" alt="Third slide" />
+                    <div className="parent-container pt-4" style={{ height: "500px" }}>
+                        <Line data={forecastLineChartData} className="d-block w-100" alt="Forecast slide" />
+                    </div>
                 </div> */}
             </div>
             <a className="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">

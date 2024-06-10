@@ -28,6 +28,7 @@ ChartJS.register(
 
 const Dashboard = () => {
     const { userName } = useContext(AppContext);
+    const {useremail} = useContext(AppContext)
 
     const [getMonthCategoryExpenses, setGetMonthCategoryExpenses] = useState([]);
     const [selectedYears, setSelectedYears] = useState([]);
@@ -36,7 +37,7 @@ const Dashboard = () => {
     useEffect(() => {
         const getexpensesbymonthcategory = async () => {
             try {
-                const response = await api.post("/api/getexpensesbymonthcategory", { userName });
+                const response = await api.post("/api/getexpensesbymonthcategory", { useremail });
                 setGetMonthCategoryExpenses(response.data);
             } catch (err) {
                 console.log(err.message);

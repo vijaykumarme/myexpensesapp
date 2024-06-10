@@ -36,7 +36,7 @@ app.use("/api/userdashboard",require("./routes/userdashboard.js"))
 app.post("/api/getexpenses", async (req, res) => {
   try {
     const allexpenses = await pool.query(
-      "select expenseid,Extract(Day from Date) as Date,Month,Year,c.Categoryname,Description,Place,Paymentmethod,Amount from expenses e inner join Category c on c.Categoryid = e.Categoryid where userid = $1 order by Year desc,Month desc,date desc",[req.body.userName]
+      "select expenseid,Extract(Day from Date) as Date,Month,Year,c.Categoryname,Description,Place,Paymentmethod,Amount from expenses e inner join Category c on c.Categoryid = e.Categoryid where userid = $1 order by Year desc,Month desc,date desc",[req.body.useremail]
     );
     res.json(allexpenses.rows);
   } catch (err) {
@@ -47,7 +47,7 @@ app.post("/api/getexpenses", async (req, res) => {
 app.post("/api/getmonthexpenses", async (req, res) => {
   try {
     const allexpenses = await pool.query(
-      "select expenseid,Extract(Day from Date) as Date,Month,Year,c.Categoryname,Description,Place,Paymentmethod,Amount from expenses e  inner join Category c on c.Categoryid = e.Categoryid  where userid = $1 order by Year desc,Month desc,date desc",[req.body.userName]
+      "select expenseid,Extract(Day from Date) as Date,Month,Year,c.Categoryname,Description,Place,Paymentmethod,Amount from expenses e  inner join Category c on c.Categoryid = e.Categoryid  where userid = $1 order by Year desc,Month desc,date desc",[req.body.useremail]
     );
     res.json(allexpenses.rows);
   } catch (err) {
@@ -148,7 +148,7 @@ app.delete("/api/deleteexpense/:id", async (req, res) => {
 //get all the expenses for current month
 app.post("/api/getcurrentmonthexpenses", async(req,res) => {
   try {
-    const getcurrentmonthexpenses = await pool.query("select e.month,e.year,c.categoryname,sum(e.amount) as totalamount from expenses e inner join category c ON e.categoryid = c.categoryid where month = $1 and year = $2 and userid = $3 group by month,year,categoryname",[req.body.currentMonth,req.body.currentYear,req.body.userName]);
+    const getcurrentmonthexpenses = await pool.query("select e.month,e.year,c.categoryname,sum(e.amount) as totalamount from expenses e inner join category c ON e.categoryid = c.categoryid where month = $1 and year = $2 and userid = $3 group by month,year,categoryname",[req.body.currentMonth,req.body.currentYear,req.body.useremail]);
     res.json(getcurrentmonthexpenses.rows)
   } catch(err) {
     console.log(err.message)
@@ -157,7 +157,7 @@ app.post("/api/getcurrentmonthexpenses", async(req,res) => {
 
 app.post("/api/getexpensesbymonthcategory", async(req,res) => {
   try {
-    const getexpensesbymonthcategory = await pool.query("select e.year,e.month,c.categoryname,sum(e.amount) as Amount from expenses e inner join category c on e.categoryid = c.categoryid where userid = $1 group by e.year,e.month,c.categoryname order by e.year,e.month,c.categoryname;",[req.body.userName]);
+    const getexpensesbymonthcategory = await pool.query("select e.year,e.month,c.categoryname,sum(e.amount) as Amount from expenses e inner join category c on e.categoryid = c.categoryid where userid = $1 group by e.year,e.month,c.categoryname order by e.year,e.month,c.categoryname;",[req.body.useremail]);
     res.json(getexpensesbymonthcategory.rows)
   } catch(err) {
     console.log(err.message) 
