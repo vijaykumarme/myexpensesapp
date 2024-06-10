@@ -69,7 +69,7 @@ const Home = () => {
     async function getCurrentMonthExpensesFunc () {
         try {
             const responsemonthly = await api.post("/api/getcurrentmonthexpenses",{currentMonth,currentYear,useremail});
-            console.log(useremail)
+            console.log(responsemonthly)
             console.log(responsemonthly.data)
             setGetCurrentMonthExpenes(responsemonthly.data)
             const responseall = await api.post("/api/getmonthexpenses",{useremail});
