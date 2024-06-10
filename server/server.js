@@ -149,7 +149,7 @@ app.delete("/api/deleteexpense/:id", async (req, res) => {
 app.post("/api/getcurrentmonthexpenses", async(req,res) => {
   try {
     const getcurrentmonthexpenses = await pool.query("select e.month,e.year,c.categoryname,sum(e.amount) as totalamount from expenses e inner join category c ON e.categoryid = c.categoryid where month = $1 and year = $2 and userid = $3 group by month,year,categoryname",[req.body.currentMonth,req.body.currentYear,req.body.useremail]);
-    res.json(getcurrentmonthexpenses.rows)
+    res.json(req.body.useremail)
   } catch(err) {
     console.log(err.message)
   }
