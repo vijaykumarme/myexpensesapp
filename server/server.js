@@ -35,8 +35,11 @@ app.use("/api/userdashboard",require("./routes/userdashboard.js"))
 //get all the records
 app.post("/api/getexpenses", async (req, res) => {
   try {
+    // const allexpenses = await pool.query(
+    //   "select expenseid,Extract(Day from Date) as Date,Month,Year,c.Categoryname,Description,Place,Paymentmethod,Amount from expenses e inner join Category c on c.Categoryid = e.Categoryid where userid = $1 order by Year desc,Month desc,date desc",[req.body.useremail]
+    // );
     const allexpenses = await pool.query(
-      "select expenseid,Extract(Day from Date) as Date,Month,Year,c.Categoryname,Description,Place,Paymentmethod,Amount from expenses e inner join Category c on c.Categoryid = e.Categoryid where userid = $1 order by Year desc,Month desc,date desc",[req.body.useremail]
+      "select expenseid,Extract(Day from Date) as Date,Month,Year,c.Categoryname,Description,Place,Paymentmethod,Amount from expenses e inner join Category c on c.Categoryid = e.Categoryid order by Year desc,Month desc,date desc",[req.body.useremail]
     );
     res.json(allexpenses.rows);
   } catch (err) {
