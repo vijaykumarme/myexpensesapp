@@ -82,11 +82,11 @@ const Home = () => {
         const fetchFinancialData = async () => {
             try {
                 if (useremail) {
-                    const responseMonthly = await api.post("/api/getcurrentmonthexpenses", { currentMonth, currentYear, useremail });
+                    const responseMonthly = await axios.post("https://myexpenses.xyz/api/getcurrentmonthexpenses", { currentMonth, currentYear, useremail });
                     setGetCurrentMonthExpenes(responseMonthly.data);
-                    const responseAll = await api.post("/api/getmonthexpenses", { useremail });
+                    const responseAll = await axios.post("https://myexpenses.xyz/api/getmonthexpenses", { useremail });
                     setGetAllExpenses(responseAll.data);
-                    const getCurrentIncome = await api.post("/api/getmonthlyincome", { currentYear, currentMonth, useremail });
+                    const getCurrentIncome = await axios.post("https://myexpenses.xyz/api/getmonthlyincome", { currentYear, currentMonth, useremail });
                     setGetCurrentMonthIncome(getCurrentIncome.data);
                 }
             } catch (err) {
