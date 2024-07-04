@@ -12,7 +12,6 @@ import api from "../api/ApiURL";
 const History = () => {
 
     const {userName} = useContext(AppContext)
-    const {useremail} = useContext(AppContext)
 
     const {allExpenses} = useContext(AppContext)
     const {setAllExpenses} = useContext(AppContext)
@@ -28,7 +27,7 @@ const History = () => {
     useEffect(() => {
         const getAllRecords = async () => {
             try {
-                const response = await api.post("/api/getexpenses",{useremail});
+                const response = await api.post("/api/getexpenses",{userName});
                 setAllExpenses(response.data)
             }catch(err) {
                 console.log(err.message)

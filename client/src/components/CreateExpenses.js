@@ -10,7 +10,6 @@ import api from "../api/ApiURL";
 const CreateExpenses = () => {
 
     const {userName} = useContext(AppContext)
-    const {useremail} = useContext(AppContext)
 
     const NavigateTo = useNavigate();
 
@@ -45,7 +44,7 @@ const CreateExpenses = () => {
         const currentDay = dateObject.getDate();
         const currentMonth = dateObject.getMonth()+1;
         const currentYear = dateObject.getFullYear();
-        const userid = useremail;
+        const userid = userName;
         try {
             const createExpenses = await api.post("/api/createexpense",{
                 userid,categoryName,Amount,description,Place,paymentMethod,currentMonth,currentYear,date

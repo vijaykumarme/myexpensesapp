@@ -28,7 +28,7 @@ const Header = () => {
     return (
         <Fragment>
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-          <NavLink to="/" className="navbar-brand text-light">MyExpenses</NavLink>
+          <NavLink to="/" className="navbar-brand text-light">MyExpenses!!</NavLink>
           <div className="d-flex align-items-center ml-auto">
             <span className="text-light mr-3">{userName}</span>
             <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
