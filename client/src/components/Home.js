@@ -79,6 +79,8 @@ const Home = () => {
         }
     }
 
+    console.log(getCurrentMonthIncome)
+
     async function getName() {
         try {
             // const response = await fetch("http://mynewexpenses.xyz/api/userdashboard/",{
