@@ -1,0 +1,8 @@
+.container-fluid {
+    min-height: 100vh; /* Set a minimum height to ensure the content takes up the full viewport */
+    position: relative;
+  }
+  
+  .main-content {
+    padding-bottom: 50px; /* Adjust this value to match your footer's height */
+  }

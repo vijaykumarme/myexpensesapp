@@ -64,7 +64,7 @@ const LoginPage = () => {
 
     return (
         <form onSubmit={sumbitHandler} className="container">
-            <div className="card mb-3 mt-3 pt-1">
+            <div className="card mb-3 mt-3 pt-1" style={{"box-shadow": "4px 4px 8px rgba(0, 0, 0, 0.3)"}}>
                 <div className="card-header p-2 text-center"><h3>Login</h3></div>
                 <div className="card-body">
                     <input type="hidden" id="Id" />

@@ -11,6 +11,7 @@ import {
     Tooltip,
     Legend,
     ArcElement,
+    DecimationAlgorithm,
 } from 'chart.js'
 //import { Chart, ArcElement, Legend, Tooltip } from 'chart.js';
 import moment from 'moment';
@@ -18,6 +19,7 @@ import moment from 'moment';
 //components
 import AppContext from "../AppContext";
 import api from "../api/ApiURL";
+import "./Home.css";
 
 
 
@@ -79,7 +81,7 @@ const Home = () => {
         }
     }
 
-    console.log(getCurrentMonthIncome)
+    
 
     async function getName() {
         try {
@@ -213,14 +215,18 @@ const Home = () => {
 
     // Bar Chart
 
+    const filteredExpenses = getAllExpenses.filter(expense => expense.month === currentMonth);
+
     const dailyExpenses = {};
-    getAllExpenses.forEach(expense => {
+    filteredExpenses.forEach(expense => {
         const { date, amount } = expense;
         if (!dailyExpenses[date]) {
             dailyExpenses[date] = 0;
         }
         dailyExpenses[date] += parseFloat(amount);
     });
+
+    console.log(dailyExpenses)
 
     const days = Object.keys(dailyExpenses).sort((a, b) => a - b);
     const dailyAmounts = days.map(day => dailyExpenses[day]);
@@ -245,61 +251,59 @@ const Home = () => {
         ]
     };
 
+    const barChartOptions = {
+      plugins: {
+        legend: {
+          display: false,  // This removes the legend
+        },
+      },
+    };
+
 
     return (
-        <Fragment>
-        <div className="container">
-        {/* <div className="pt-2 container"> */}
-            <div className="card my-2">
-                <div className="card-header bg-primary text-white">
-                    <h4 className="mb-0 text-center">Current Month Information</h4>
+      <Fragment>
+        <div className="container-fluid">
+          <div className="main-content">
+            <div className="container">
+              <div className="card my-2">
+              <div className="card-header bg-primary text-white">
+                <h4 className="mb-0 text-center">Current Month Information</h4>
+              </div>
+              <div className="card-body">
+                <div className="row">
+                  <div className="col-12 col-md-6 mb-3 mb-md-0">
+                    <p className="p mb-0">Month: <span className="text-primary">{currentMonthName.monthName}</span></p>
+                  </div>
+                  <div className="col-12 col-md-6 text-md-right">
+                    {getCurrentMonthIncome.amount && <p className="p mb-2 mb-md-0">Month Income: &#x20B9;<span className="text-success">{getCurrentMonthIncome.amount}</span></p>}
+                    <p className="p mb-2 mb-md-0">Expenses: &#x20B9;<span className="text-danger">{TotalMonthAmount}</span></p>
+                    {getCurrentMonthIncome.amount && <p className="p mb-0">Saving: &#x20B9;<span className="text-success">{getCurrentMonthIncome.amount-TotalMonthAmount}</span></p>}
+                  </div>
                 </div>
-                <div className="card-body">
-                    <div className="row">
-                        <div className="col-12 col-md-6 mb-3 mb-md-0">
-                            <p className="p mb-0">Month: <span className="text-primary">{currentMonthName.monthName}</span></p>
-                        </div>
-                        <div className="col-12 col-md-6 text-md-right">
-                            {getCurrentMonthIncome.amount && <p className="p mb-2 mb-md-0">Month Income: &#x20B9;<span className="text-success">{getCurrentMonthIncome.amount}</span></p>}
-                            <p className="p mb-2 mb-md-0">Expenses: &#x20B9;<span className="text-danger">{TotalMonthAmount}</span></p>
-                            {getCurrentMonthIncome.amount && <p className="p mb-0">Saving: &#x20B9;<span className="text-success">{getCurrentMonthIncome.amount-TotalMonthAmount}</span></p>}
-                        </div>
-                    </div>
-                </div>
+              </div>
             </div>
-        {/* </div> */}
-        <div className="card my-2" style={{ height: '90vh'}}>
-        <div className="card-header bg-primary text-white">
-            <h4 className="mb-0 text-center">Charts</h4>
-        </div>
-        <div id="carouselExampleControls" className="carousel slide py-2" data-ride="carousel">
-            <div className="carousel-inner">
-                <div className="carousel-item active">
-                    <div>
-                    <Pie data={pieChartData} className="" alt="First slide" style={{width: '200px'}} />
-                    </div>
-                </div>
-                <div className="carousel-item">
-                    <div className="parent-container pt-4" style={{ height: "500px" }}>
-                        <Bar data={barChartData} className="d-block w-100" alt="Third slide" />
-                    </div>
-                </div>
-                {/* <div className="carousel-item">
-                    <Pie data={pieChartData} className="d-block w-100" alt="Third slide" />
-                </div> */}
+          </div>
+
+          <div className="card vh-100 my-">
+            <div className="card-header bg-primary text-white">
+              <h4 className="mb-0 text-center">Charts</h4>
             </div>
-            <a className="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-                <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span className="sr-only">Previous</span>
-            </a>
-            <a className="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-                <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                <span className="sr-only">Next</span>
-            </a>
+            <div className="card-body">
+              <div className="my-4 py-2 border border-2 rounded" style={{"box-shadow": "4px 4px 8px 2px rgba(0, 0, 0, 0.3)"}}>
+                <h6 className="text-center" style={{ fontFamily: 'Roboto, sans-serif', fontSize: '0.8rem', color: '#333', textTransform: 'uppercase', letterSpacing: '1px', padding: '10px 0', backgroundColor: '#f9f9f9', fontWeight: 'bold', borderRadius: '8px', boxShadow: '2px 2px 12px rgba(0, 0, 0, 0.1)' }}>
+                  Overview of This Month's Expenses
+                </h6>
+                <Pie data={pieChartData} className="" alt="First slide-lg" />
+              </div>
+              <div className="my-4 py-2 border border-2 rounded shadow-lg" style={{"box-shadow": "4px 4px 8px 2px rgba(0, 0, 0, 0.3)"}}>
+              <h6 className="text-center"  style={{ fontFamily: 'Roboto, sans-serif', fontSize: '0.8rem', color: '#333', textTransform: 'uppercase', letterSpacing: '1px', padding: '10px 0', backgroundColor: '#f9f9f9', fontWeight: 'bold', borderRadius: '8px', boxShadow: '2px 2px 12px rgba(0, 0, 0, 0.1)' }}>This Month's Expenses by Day</h6>
+                <Bar options={barChartOptions} data={barChartData} className="d-block" alt="second slide" />
+              </div>
+            </div>
+          </div>
         </div>
         </div>
-        </div>
-        </Fragment>
+      </Fragment>
     );
 }
 

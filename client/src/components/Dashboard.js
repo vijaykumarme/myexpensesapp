@@ -139,7 +139,13 @@ const Dashboard = () => {
         }]
     };
 
-    const BarChartoptions = {};
+    const BarChartoptions = {
+        plugins: {
+            legend: {
+              display: false,  // This removes the legend
+            },
+          },
+    };
 
     return (
         <Fragment>
@@ -165,10 +171,12 @@ const Dashboard = () => {
                             />
                         </div>
                         <div className="parent-container" style={{ height: "500px" }}>
-                            <div className="stretch-height py-2">
+                            <div className="stretch-height my-4 py-2 border border-2 rounded" style={{"box-shadow": "4px 4px 8px 2px rgba(0, 0, 0, 0.3)"}}>
+                                <h6 className="text-center" style={{ fontFamily: 'Roboto, sans-serif', fontSize: '0.8rem', color: '#333', textTransform: 'uppercase', letterSpacing: '1px', padding: '10px 0', backgroundColor: '#f9f9f9', fontWeight: 'bold', borderRadius: '8px', boxShadow: '2px 2px 12px rgba(0, 0, 0, 0.1)' }}>Expenses By Category</h6>
                                 <Bar options={BarChartoptions} data={BarChartDataByCategory} />
                             </div>
-                            <div className="stretch-height py-2">
+                            <div className="stretch-height my-4 py-2 border border-2 rounded"  style={{"box-shadow": "4px 4px 8px 2px rgba(0, 0, 0, 0.3)"}}>
+                                <h6 className="text-center" style={{ fontFamily: 'Roboto, sans-serif', fontSize: '0.8rem', color: '#333', textTransform: 'uppercase', letterSpacing: '1px', padding: '10px 0', backgroundColor: '#f9f9f9', fontWeight: 'bold', borderRadius: '8px', boxShadow: '2px 2px 12px rgba(0, 0, 0, 0.1)' }}>Expenses by Month-Year</h6>
                                 <Bar options={BarChartoptions} data={BarChartDataByMonthYear} />
                             </div>
                         </div>
