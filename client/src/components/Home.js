@@ -268,7 +268,7 @@ const Home = () => {
                 </div>
             </div>
         {/* </div> */}
-        <div className="card my-2">
+        <div className="card my-2" style={{ height: '90vh'}}>
         <div className="card-header bg-primary text-white">
             <h4 className="mb-0 text-center">Charts</h4>
         </div>
@@ -276,7 +276,7 @@ const Home = () => {
             <div className="carousel-inner">
                 <div className="carousel-item active">
                     <div>
-                    <Pie data={pieChartData} className="d-block h-100 w-100" alt="First slide" />
+                    <Pie data={pieChartData} className="" alt="First slide" style={{width: '200px'}} />
                     </div>
                 </div>
                 <div className="carousel-item">
