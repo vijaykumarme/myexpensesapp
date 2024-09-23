@@ -67,6 +67,8 @@ const History = () => {
             }
         });
     };
+    
+    const uniqueDays = [...new Set(allExpenses.map(expense => expense.date))].sort((a, b) => a - b);
 
     // Search Filters
     const [search, setSearch] = useState("");
@@ -113,13 +115,13 @@ const History = () => {
                 <h3 className="text-center pt-2">History</h3>
 
                 {/* Year, Month, and Day Filter */}
-                <YearMonthFilter
-                    uniqueYears={[...new Set(allExpenses.map(expense => expense.year))]}
-                    uniqueMonths={[...new Set(allExpenses.map(expense => expense.month))]}
-                    uniqueDays={[...new Set(allExpenses.map(expense => expense.date))]}  // Pass unique days
-                    handleYearChange={handleYearChange}
-                    handleMonthChange={handleMonthChange}
-                    handleDayChange={handleDayChange}  // Pass day handler
+                <YearMonthFilter 
+                    uniqueYears={[...new Set(allExpenses.map(expense => expense.year))]} 
+                    uniqueMonths={[...new Set(allExpenses.map(expense => expense.month))]} 
+                    uniqueDays={uniqueDays}  // Add this line
+                    handleYearChange={handleYearChange} 
+                    handleMonthChange={handleMonthChange} 
+                    handleDayChange={handleDayChange} 
                 />
 
                 <form className="d-flex">
