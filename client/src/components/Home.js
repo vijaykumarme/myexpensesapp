@@ -273,12 +273,71 @@ const Home = () => {
     };
 
     const barChartOptions = {
+      scales: {
+        x: {
+            beginAtZero: true,
+        },
+        y: {
+            beginAtZero: true,
+            ticks: {
+                callback: function(value) {
+                    return `₹${value}`;  // Adds the rupee symbol to the y-axis
+                }
+            }
+        }
+    },
       plugins: {
         legend: {
           display: false,  // This removes the legend
         },
       },
     };
+
+    const maxAmountLineGraph = Math.max(...dailyAmounts);  // Find the highest amount
+
+    const lineChartData = {
+        labels: days,  // Use the same 'days' from the bar chart
+        datasets: [
+            {
+                label: "Daily Expenses",
+                data: dailyAmounts,  // Reuse the dailyAmounts
+                fill: false,  // No fill under the line
+                borderColor: 'rgba(75,192,192,1)',  // Line color
+                tension: 0.1,  // Smooth curve
+                pointBackgroundColor: dailyAmounts.map(amount => 
+                    amount === maxAmountLineGraph ? 'red' : 'rgba(75,192,192,1)'
+                ),  // Highlight the highest value with a red point
+                pointBorderWidth: 2,
+                pointRadius: dailyAmounts.map(amount => 
+                    amount === maxAmountLineGraph ? 6 : 3  // Make the red point larger
+                ),  // Increase size of the highest value dot
+                borderWidth: 1,  // Decrease the width of the line
+            }
+        ]
+    };
+  
+
+const lineChartOptions = {
+  scales: {
+      x: {
+          beginAtZero: true,
+      },
+      y: {
+          beginAtZero: true,
+          ticks: {
+              callback: function(value) {
+                  return `₹${value}`;  // Adds the rupee symbol to the y-axis
+              }
+          }
+      }
+  },
+  plugins: {
+      legend: {
+          display: false,
+          position: 'top'
+      }
+  }
+};
 
 
     return (
@@ -310,6 +369,12 @@ const Home = () => {
               <h4 className="mb-0 text-center">Charts</h4>
             </div>
             <div className="card-body">
+              <div className="my-4 py-2 border border-2 rounded" style={{"box-shadow": "4px 4px 8px 2px rgba(0, 0, 0, 0.3)"}}>
+                <h6 className="text-center" style={{ fontFamily: 'Roboto, sans-serif', fontSize: '0.8rem', color: '#333', textTransform: 'uppercase', letterSpacing: '1px', padding: '10px 0', backgroundColor: '#f9f9f9', fontWeight: 'bold', borderRadius: '8px', boxShadow: '2px 2px 12px rgba(0, 0, 0, 0.1)' }}>
+                  Overview of This Month's Expenses
+                </h6>
+                <Line options={lineChartOptions} data={lineChartData} className="d-block" alt="Line chart" />
+              </div>
               <div className="my-4 py-2 border border-2 rounded" style={{"box-shadow": "4px 4px 8px 2px rgba(0, 0, 0, 0.3)"}}>
                 <h6 className="text-center" style={{ fontFamily: 'Roboto, sans-serif', fontSize: '0.8rem', color: '#333', textTransform: 'uppercase', letterSpacing: '1px', padding: '10px 0', backgroundColor: '#f9f9f9', fontWeight: 'bold', borderRadius: '8px', boxShadow: '2px 2px 12px rgba(0, 0, 0, 0.1)' }}>
                   Overview of This Month's Expenses
