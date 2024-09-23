@@ -1,6 +1,5 @@
-import React, { Fragment, useContext } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import { NavLink } from "react-router-dom";
-import Swal from 'sweetalert2';
 import AppContext from "../AppContext";
 
 const Header = () => {
@@ -8,6 +7,10 @@ const Header = () => {
   const { setIsAuthenticated } = useContext(AppContext);
   const { userName } = useContext(AppContext);
   const { setUsername } = useContext(AppContext);
+  const { isTodayRecordExists, setIsTodayRecordExists } = useContext(AppContext); // Add setIsTodayRecordExists to context
+
+  // State for toggling the notification text
+  const [showNotificationText, setShowNotificationText] = useState(false);
 
   // Function to hide the navbar after clicking a link
   const collapseNavbar = () => {
@@ -21,14 +24,19 @@ const Header = () => {
     setUsername("");
     localStorage.removeItem("token");
     setIsAuthenticated(false);
-    Swal.fire({
-      position: "top-end",
-      icon: "success",
-      title: "Logged out successfully",
-      showConfirmButton: false,
-      timer: 1500
-    });
     collapseNavbar(); // Collapse the navbar on logout
+  };
+
+  // Function to toggle notification text visibility
+  const toggleNotificationText = () => {
+    if (!showNotificationText) {
+      // If notification text is currently not shown, show it
+      setShowNotificationText(true);
+    } else {
+      // If notification text is currently shown, hide it and set isTodayRecordExists to false
+      setShowNotificationText(false);
+      setIsTodayRecordExists(false); // Set to false to remove the notification icon
+    }
   };
 
   return (
@@ -36,6 +44,51 @@ const Header = () => {
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <NavLink to="/" className="navbar-brand text-light">MyExpenses</NavLink>
         <div className="d-flex align-items-center ml-auto">
+          {/* {isAuthenticated && (
+            <div style={{ position: "relative", cursor: "pointer" }} onClick={toggleNotificationText}>
+              <i
+                className={`fas fa-bell ${isTodayRecordExists ? "text-danger" : "text-light"} mr-2`}
+                style={{ fontSize: "1.5rem" }}
+              ></i>
+              {isTodayRecordExists && (
+                <>
+                  <span
+                    style={{
+                      position: "absolute",
+                      top: "-5px",
+                      right: "-10px",
+                      backgroundColor: "red",
+                      color: "white",
+                      borderRadius: "50%",
+                      padding: "2px 6px",
+                      fontSize: "0.8rem"
+                    }}
+                  >
+                    1
+                  </span>
+                  {showNotificationText && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "30px", // Position it below the icon
+                        right: "-580%", // Align it horizontally
+                        backgroundColor: "white",
+                        border: "1px solid #ccc",
+                        width: "300px",
+                        borderRadius: "4px",
+                        padding: "10px",
+                        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+                        fontSize: "0.9rem",
+                        zIndex: 1000
+                      }}
+                    >
+                      Looks like you haven't added a record today. Don't miss it!
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )} */}
           <span className="text-light mr-3">{userName}</span>
           <button
             className="navbar-toggler"

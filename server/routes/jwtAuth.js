@@ -89,6 +89,43 @@ router.post("/login", validInfo, async (req,res) => {
     }
 });
 
+router.put("/update-password", validInfo, async (req, res) => {
+    console.log(req.body);  // Log the incoming request body
+    // Proceed with rest of code
+});
+
+
+// router.put("/update-password", validInfo, async (req, res) => {
+//     try {
+//       // 1. Destructure the req.body to get the email and new password
+//       const { email, newPassword } = req.body;
+  
+//       // 2. Check if the user exists
+//       const user = await pool.query("SELECT * FROM users WHERE useremail = $1", [email]);
+  
+//       if (user.rows.length === 0) {
+//         return res.status(404).json("User does not exist");
+//       }
+  
+//       // 3. Bcrypt the new password
+//       const saltRound = 10;
+//       const salt = await bcrypt.genSalt(saltRound);
+//       const bcryptPassword = await bcrypt.hash(newPassword, salt);
+  
+//       // 4. Update the user's password in the database
+//       await pool.query(
+//         "UPDATE users SET userpassword = $1 WHERE useremail = $2",
+//         [bcryptPassword, email]
+//       );
+  
+//       res.status(200).json("Password updated successfully");
+//     } catch (err) {
+//       console.error(err.message);
+//       res.status(500).send("Server error");
+//     }
+//   });
+  
+
 router.get("/is-verify", authorization, async(req,res) => {
     try {
         res.json(true)

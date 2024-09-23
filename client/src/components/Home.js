@@ -56,6 +56,12 @@ const Home = () => {
     const {userName} = useContext(AppContext)
     const {setUseremail} = useContext(AppContext)
     const {useremail} = useContext(AppContext)
+    const { currentDay } = useContext(AppContext);
+    const { setCurrentDay } = useContext(AppContext);
+    const { currentTimeInHours } = useContext(AppContext);
+    const {setCurrentTimeInHours} = useContext(AppContext);
+    const { setIsTodayRecordExists } = useContext(AppContext);
+    const { isTodayRecordExists } = useContext(AppContext);
 
     const [getCurrentMonthExpenses, setGetCurrentMonthExpenes] = useState([]);
     const [getAllExpenses, setGetAllExpenses] = useState([])
@@ -66,7 +72,11 @@ const Home = () => {
     const currentMonth = dateObject.getMonth()+1;
     const currentYear = dateObject.getFullYear();
     const currentMonthName = MonthNames.find(month => month.monthId === currentMonth)
+    const currentDayVar = String(dateObject.getDate()).padStart(2, '0');
+    const currentTimeInHoursVar = String(dateObject.getHours()).padStart(2, '0');
 
+    setCurrentDay(currentDayVar);
+    setCurrentTimeInHours(currentTimeInHoursVar);
 
     async function getCurrentMonthExpensesFunc () {
         try {
@@ -81,6 +91,18 @@ const Home = () => {
         }
     }
 
+    
+
+    useEffect(() => {
+      const currentDayRecord = getAllExpenses.filter(expense => expense.date === currentDay && expense.month === currentYear)
+      if(currentDayRecord.length === 0 && currentTimeInHours > 10 &&!isTodayRecordExists) {
+        setIsTodayRecordExists(true);
+      }
+      else {
+        setIsTodayRecordExists(false);
+      }
+  
+    },[])
     
 
     async function getName() {
@@ -226,7 +248,6 @@ const Home = () => {
         dailyExpenses[date] += parseFloat(amount);
     });
 
-    console.log(dailyExpenses)
 
     const days = Object.keys(dailyExpenses).sort((a, b) => a - b);
     const dailyAmounts = days.map(day => dailyExpenses[day]);
@@ -264,8 +285,8 @@ const Home = () => {
       <Fragment>
         <div className="container-fluid">
           <div className="main-content">
-            <div className="container">
-              <div className="card my-2">
+            <div className="container" style={{"box-shadow": "4px 4px 8px 2px rgba(0, 0, 0, 0.3)"}}>
+              <div className="card my-2" style={{margin: "0 -15px"}}>
               <div className="card-header bg-primary text-white">
                 <h4 className="mb-0 text-center">Current Month Information</h4>
               </div>
@@ -284,7 +305,7 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="card vh-100 my-">
+          <div className="card vh-100">
             <div className="card-header bg-primary text-white">
               <h4 className="mb-0 text-center">Charts</h4>
             </div>

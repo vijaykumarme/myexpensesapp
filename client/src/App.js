@@ -28,6 +28,9 @@ function App() {
   const [categories, setCategories] = useState([])
   const [userName, setUsername] = useState("");
   const [useremail,setUseremail] = useState("");
+  const [currentDay, setCurrentDay] = useState("");
+  const [currentTimeInHours, setCurrentTimeInHours] = useState("");
+  const [isTodayRecordExists, setIsTodayRecordExists] = useState("");
 
   async function isAuth() {
     try {
@@ -56,7 +59,7 @@ function App() {
 
 
   return (
-    <AppContext.Provider value={{ isAuthenticated,setIsAuthenticated,allExpenses, setAllExpenses, expensesid, setExpensesid, editExpense, setEditExpense, categories, setCategories, userName, setUsername, useremail,setUseremail}}>
+    <AppContext.Provider value={{ isAuthenticated,setIsAuthenticated,allExpenses, setAllExpenses, expensesid, setExpensesid, editExpense, setEditExpense, categories, setCategories, userName, setUsername, useremail,setUseremail,currentDay,setCurrentDay,currentTimeInHours,setCurrentTimeInHours,isTodayRecordExists,setIsTodayRecordExists}}>
       <Fragment>
       <div className="Container">
         <BrowserRouter>

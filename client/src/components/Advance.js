@@ -1,4 +1,4 @@
-import React, { Fragment,useContext,useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import axios from "axios";
 import Swal from 'sweetalert2';
 import { Link } from "react-router-dom";
@@ -8,28 +8,32 @@ import AppContext from "../AppContext";
 import api from "../api/ApiURL";
 
 const Advance = () => {
+    const { useremail } = useContext(AppContext);
 
-    const { useremail } = useContext(AppContext)
-
-    const [addCategory, setAddCategory] = useState(false)
-    const [addMonthlyIncome, setAddMonthlyIncome] = useState(false)
+    const [addCategory, setAddCategory] = useState(false);
+    const [addMonthlyIncome, setAddMonthlyIncome] = useState(false);
 
     const [category, setCategory] = useState("");
     const [year, setYear] = useState("");
     const [month, setMonth] = useState("");
     const [amount, SetAmount] = useState("");
 
+    // State for Update Password
+    const [updatePassword, setUpdatePassword] = useState(false);
+    const [newPassword, setNewPassword] = useState("");
+
     const openAddCategoryHandler = (e) => {
         e.preventDefault();
         setAddCategory(true);
-        setAddMonthlyIncome(false)
-    }
+        setAddMonthlyIncome(false);
+        setUpdatePassword(false);
+    };
 
     const cancelCategoryHandler = () => {
         setAddCategory(false);
-    }
+    };
 
-    const categorySumitHandler = async (e) => {
+    const categorySubmitHandler = async (e) => {
         e.preventDefault();
         try {
             const response = await api.post("/api/addCategory", { category });
@@ -68,14 +72,15 @@ const Advance = () => {
     const openAddMonthlyIncomeHandler = (e) => {
         e.preventDefault();
         setAddMonthlyIncome(true);
-        setAddCategory(false)
-    }
+        setAddCategory(false);
+        setUpdatePassword(false);
+    };
 
     const cancelMonthlyIncomeHandler = () => {
         setAddMonthlyIncome(false);
-    }
+    };
 
-    const MonthlyIncomeSumitHandler = async(e) => {
+    const monthlyIncomeSubmitHandler = async (e) => {
         e.preventDefault();
         try {
             const response = await api.post("/api/addmonthlyincome", {
@@ -85,7 +90,7 @@ const Advance = () => {
                 useremail
             });
 
-            if(response.data !== 0) {
+            if (response.data !== 0) {
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
@@ -102,9 +107,9 @@ const Advance = () => {
                     timer: 1500
                 });
             }
-            setAddMonthlyIncome(false)
-        } catch(err) {
-            console.log(err.message)
+            setAddMonthlyIncome(false);
+        } catch (err) {
+            console.log(err.message);
             Swal.fire({
                 position: "top-end",
                 icon: "error",
@@ -114,10 +119,56 @@ const Advance = () => {
             });
         }
         setAddMonthlyIncome(false);
-    }
+    };
 
+    // Toggle Update Password Form
+    const toggleUpdatePasswordHandler = (e) => {
+        e.preventDefault();
+        setUpdatePassword(true);
+        setAddCategory(false);
+        setAddMonthlyIncome(false);
+    };
 
-    return(
+    // Submit Update Password
+    const updatePasswordHandler = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.put("/api/auth/update-password", {
+                email: useremail,
+                newPassword
+            });
+
+            if (response.status === 200) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Password updated successfully",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            } else {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Failed to update password",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+            setUpdatePassword(false);
+        } catch (err) {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "An error occurred",
+                text: err.message,
+                showConfirmButton: true
+            });
+            console.error(err.message);
+        }
+    };
+
+    return (
         <Fragment>
             <div className="border border-dark rounded m-1">
                 {!addCategory ? (
@@ -125,62 +176,91 @@ const Advance = () => {
                         <h5 className="mb-0">Category</h5>
                         <span onClick={e => openAddCategoryHandler(e)} className="btn btn-primary">Add</span>
                     </div>
-                ): (
+                ) : (
                     <div className="px-2 py-2">
-                    <h5 className="px-1">Category</h5>
-                    <form onSubmit={e => categorySumitHandler(e)} className="form-control">
-                        <div className="row">
-                            <div className="col-12 my-1">
-                                <input onChange={e => setCategory(e.target.value)} type="text" name="text" placeholder="Category" className="form-control" />
+                        <h5 className="px-1">Category</h5>
+                        <form onSubmit={e => categorySubmitHandler(e)} className="form-control">
+                            <div className="row">
+                                <div className="col-12 my-1">
+                                    <input onChange={e => setCategory(e.target.value)} type="text" placeholder="Category" className="form-control" />
+                                </div>
                             </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-6 my-1">
-                                <button type="submit" className="btn btn-primary btn-block form-control">Add</button>
+                            <div className="row">
+                                <div className="col-6 my-1">
+                                    <button type="submit" className="btn btn-primary btn-block form-control">Add</button>
+                                </div>
+                                <div className="col-6 my-1">
+                                    <button onClick={cancelCategoryHandler} type="button" className="btn btn-secondary btn-block form-control">Cancel</button>
+                                </div>
                             </div>
-                            <div className="col-6 my-1">
-                                <button onClick={cancelCategoryHandler} type="button" className="btn btn-secondary btn-block form-control">Cancel</button>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
                     </div>
                 )}
-                
             </div>
+
             <div className="border border-dark rounded m-1">
                 {!addMonthlyIncome ? (
                     <div className="d-flex justify-content-between align-items-center my-2 px-2">
                         <h5 className="mb-0">Monthly Income</h5>
                         <span onClick={e => openAddMonthlyIncomeHandler(e)} className="btn btn-primary">Add</span>
                     </div>
-                ): (
+                ) : (
                     <div className="px-2 py-2">
-                    <h5 className="px-1">Monthly Income</h5>
-                    <form onSubmit={e => MonthlyIncomeSumitHandler(e)} className="form-control">
-                        <div className="row">
-                            <div className="col-4 my-1">
-                                <input onChange={e => setYear(e.target.value)} type="number" name="year" placeholder="year" className="form-control" />
+                        <h5 className="px-1">Monthly Income</h5>
+                        <form onSubmit={e => monthlyIncomeSubmitHandler(e)} className="form-control">
+                            <div className="row">
+                                <div className="col-4 my-1">
+                                    <input onChange={e => setYear(e.target.value)} type="number" placeholder="Year" className="form-control" />
+                                </div>
+                                <div className="col-4 my-1">
+                                    <input onChange={e => setMonth(e.target.value)} type="text" placeholder="Month" className="form-control" />
+                                </div>
+                                <div className="col-4 my-1">
+                                    <input onChange={e => SetAmount(e.target.value)} type="text" placeholder="Amount" className="form-control" />
+                                </div>
                             </div>
-                            <div className="col-4 my-1">
-                                <input onChange={e => setMonth(e.target.value)} type="text" name="month" placeholder="month" className="form-control" />
+                            <div className="row">
+                                <div className="col-6 my-1">
+                                    <button type="submit" className="btn btn-primary btn-block form-control">Add</button>
+                                </div>
+                                <div className="col-6 my-1">
+                                    <button onClick={cancelMonthlyIncomeHandler} type="button" className="btn btn-secondary btn-block form-control">Cancel</button>
+                                </div>
                             </div>
-                            <div className="col-4 my-1">
-                                <input onChange={e => SetAmount(e.target.value)} type="text" name="amount" placeholder="amount" className="form-control" />
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-6 my-1">
-                                <button type="submit" className="btn btn-primary btn-block form-control">Add</button>
-                            </div>
-                            <div className="col-6 my-1">
-                                <button onClick={cancelMonthlyIncomeHandler} type="button" className="btn btn-secondary btn-block form-control">Cancel</button>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
                     </div>
                 )}
-                
             </div>
+
+            {/* Update Password Section */}
+            <div className="border border-dark rounded m-1">
+                {!updatePassword ? (
+                    <div className="d-flex justify-content-between align-items-center my-2 px-2">
+                        <h5 className="mb-0">Update Password</h5>
+                        <span onClick={e => toggleUpdatePasswordHandler(e)} className="btn btn-primary">Update</span>
+                    </div>
+                ) : (
+                    <div className="px-2 py-2">
+                        <h5 className="px-1">Update Password</h5>
+                        <form onSubmit={e => updatePasswordHandler(e)} className="form-control">
+                            <div className="row">
+                                <div className="col-12 my-1">
+                                    <input onChange={e => setNewPassword(e.target.value)} type="password" placeholder="New Password" className="form-control" />
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col-6 my-1">
+                                    <button type="submit" className="btn btn-primary btn-block form-control">Update</button>
+                                </div>
+                                <div className="col-6 my-1">
+                                    <button onClick={() => setUpdatePassword(false)} type="button" className="btn btn-secondary btn-block form-control">Cancel</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                )}
+            </div>
+
             <div className="border border-dark rounded m-1">
                 <div className="d-flex justify-content-between align-items-center my-2 px-2">
                     <h5 className="mb-0">View Monthly Income vs Expenses</h5>
@@ -188,7 +268,7 @@ const Advance = () => {
                 </div>
             </div>
         </Fragment>
-    )
-}
+    );
+};
 
-export default Advance
+export default Advance;
