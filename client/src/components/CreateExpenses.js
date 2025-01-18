@@ -136,20 +136,41 @@ const CreateExpenses = () => {
 
   const renderStep = () => {
     switch (step) {
-      case 1:
-        return (
-          <div>
-            <label className="bg-primary text-light" style={{borderRadius: "3px", padding: "5px"}}>Category</label>
-            <input
-              type="text"
-              className="form-control mt-2"
-              placeholder="Select below categories or enter category here"
-              value={categoryName} // Display category name
-              onChange={(e) => setCategoryName(e.target.value)} // Allow custom input
-            />
-            {renderPredefinedOptions()}
-          </div>
-        );
+        case 1:
+  return (
+    <div>
+      <label
+        className="bg-primary text-light"
+        style={{ borderRadius: "3px", padding: "5px" }}
+      >
+        Category
+      </label>
+      <select
+        className="form-control mt-2"
+        value={categoryId}
+        onChange={(e) => {
+          const selectedCategoryId = e.target.value;
+          const selectedCategory = categories.find(
+            (category) => category.categoryid === selectedCategoryId
+          );
+          setCategoryId(selectedCategoryId); // Set the category ID
+          setCategoryName(selectedCategory?.categoryname || ""); // Set the category name for display
+        }}
+        required
+      >
+        <option value="" disabled>
+          Select a category
+        </option>
+        {categories.map((category) => (
+          <option key={category.categoryid} value={category.categoryid}>
+            {category.categoryname}
+          </option>
+        ))}
+      </select>
+      {renderPredefinedOptions()}
+    </div>
+  );
+
       case 2:
         return (
           <div>
@@ -266,28 +287,29 @@ const CreateExpenses = () => {
           </button>
         )}
         {step < 6 ? (
-          <button
-            className="btn btn-primary ml-auto"
-            onClick={() => setStep(step + 1)}
-            disabled={
-              (step === 1 && !categoryName) ||
-              (step === 2 && !description) ||
-              (step === 3 && !place) ||
-              (step === 4 && !amount) ||
-              (step === 5 && !paymentMethod)
-            }
-          >
-            Next
-          </button>
-        ) : (
-          <button
-            className="btn btn-success ml-auto"
-            onClick={formSubmitHandler}
-            disabled={!date}
-          >
-            Submit
-          </button>
-        )}
+  <button
+    className="btn btn-primary ml-auto"
+    onClick={() => setStep(step + 1)}
+    disabled={
+      (step === 1 && !categoryId) || // Check categoryId for Step 1
+      (step === 2 && !description) ||
+      (step === 3 && !place) ||
+      (step === 4 && !amount) ||
+      (step === 5 && !paymentMethod)
+    }
+  >
+    Next
+  </button>
+) : (
+  <button
+    className="btn btn-success ml-auto"
+    onClick={formSubmitHandler}
+    disabled={!date}
+  >
+    Submit
+  </button>
+)}
+
       </div>
     </div>
   );
