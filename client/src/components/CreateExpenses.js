@@ -1,112 +1,296 @@
-import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import Swal from 'sweetalert2';
-
-//components
-import AppContext from "../AppContext";
+import Swal from "sweetalert2";
 import api from "../api/ApiURL";
+import AppContext from "../AppContext";
+
+import "./CreateExpenses.css";
 
 const CreateExpenses = () => {
+  const { userName } = useContext(AppContext);
+  const navigate = useNavigate();
 
-    const {userName} = useContext(AppContext)
+  const [step, setStep] = useState(1);
+  const [categories, setCategories] = useState([]);
+  const [categoryName, setCategoryName] = useState(""); // This will store category name for display
+  const [categoryId, setCategoryId] = useState(""); // This will store category ID to send in the request
+  const [description, setDescription] = useState("");
+  const [place, setPlace] = useState("");
+  const [amount, setAmount] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [date, setDate] = useState("");
 
-    const NavigateTo = useNavigate();
+  const [showMore, setShowMore] = useState(false);
 
-    const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await api.get("/api/categories");
+        setCategories(response.data);
+      } catch (err) {
+        console.log("Error fetching categories:", err.message);
+      }
+    };
 
-    const [categoryName, setCategoryName] = useState("");
-    const [description, setDescription] = useState("");
-    const [Place, setPlace] = useState("");
-    const [Amount, SetAmount] = useState("");
-    const [paymentMethod, setPaymentMethod] = useState("");
-    const [date, setDate] = useState("");
+    fetchCategories();
+  }, []);
 
+  const formSubmitHandler = async (e) => {
+    e.preventDefault();
+    const dateObject = new Date(date);
+    const currentMonth = dateObject.getMonth() + 1;
+    const currentYear = dateObject.getFullYear();
+    const userid = userName;
 
+    console.log(
+      userid,
+      categoryId,
+      description,
+      place,
+      paymentMethod,
+      currentMonth,
+      currentYear
+    );
 
-    useEffect(() => {
-        const getAllCategories = async () => {
-            try {
-                const allCategories = await api.get("/api/categories")
-                setCategories(allCategories.data)
-            }catch (err) {
-                console.log(err.message)
-            }
-            
-        }
+    try {
+      await api.post("/api/createexpense", {
+        userid,
+        categoryName: categoryId, // Send category ID
+        Amount: parseFloat(amount),
+        description,
+        Place: place,
+        paymentMethod,
+        currentMonth,
+        currentYear,
+        date,
+      });
 
-        getAllCategories()
-    },[])
-    
-    const formSubmitHandler = async (e) => {
-        e.preventDefault();
-        const dateObject = new Date(date)
-        const currentDay = dateObject.getDate();
-        const currentMonth = dateObject.getMonth()+1;
-        const currentYear = dateObject.getFullYear();
-        const userid = userName;
-        try {
-            const createExpenses = await api.post("/api/createexpense",{
-                userid,categoryName,Amount,description,Place,paymentMethod,currentMonth,currentYear,date
-            })
-            Swal.fire({
-                title: "Created!",
-                text: "Record created.",
-                icon: "success"
-              });
-            NavigateTo("/")
-        } catch(err) {
-            Swal.fire({
-                title: "Error!",
-                text: "Failed to created record.",
-                icon: "error"
-              });
-            NavigateTo("/")
-        }
-
+      Swal.fire("Created!", "Record created successfully.", "success");
+      navigate("/");
+    } catch (err) {
+      Swal.fire("Error!", "Failed to create record.", "error");
     }
+  };
 
+  const predefinedOptions = {
+    1: categories.map((category) => ({
+      id: category.categoryid,
+      label: category.categoryname,
+      onClick: () => {
+        setCategoryName(category.categoryname); // Set the name for display
+        setCategoryId(category.categoryid); // Set the ID to send in the request
+      },
+    })),
+    2: [
+      {
+        id: 1,
+        label: "Travel to Vijayawada",
+        onClick: () => setDescription("Travel to Vijayawada"),
+      },
+      {
+        id: 2,
+        label: "Idli for lunch",
+        onClick: () => setDescription("Idli for lunch"),
+      },
+      {
+        id: 3,
+        label: "Bought ice cream",
+        onClick: () => setDescription("Bought ice cream"),
+      },
+    ],
+    3: [
+      { id: 1, label: "Kaptanupalem", onClick: () => setPlace("Kaptanupalem") },
+      { id: 2, label: "Challapalli", onClick: () => setPlace("Challapalli") },
+      { id: 3, label: "Vijayawada", onClick: () => setPlace("Vijayawada") },
+    ],
+    4: [
+      { id: 1, label: "10", onClick: () => setAmount("10") },
+      { id: 2, label: "20", onClick: () => setAmount("20") },
+      { id: 3, label: "50", onClick: () => setAmount("50") },
+    ],
+    5: [
+      { id: 1, label: "Cash", onClick: () => setPaymentMethod("Cash") },
+      { id: 2, label: "Card", onClick: () => setPaymentMethod("Card") },
+      { id: 3, label: "UPI", onClick: () => setPaymentMethod("UPI") },
+    ],
+  };
+
+  const renderPredefinedOptions = () => {
+    const options = predefinedOptions[step] || [];
+    const visibleOptions = showMore ? options : options.slice(0, 9); // Show up to 9 options initially
 
     return (
-        <form onSubmit={formSubmitHandler} className="container">
-            <div className="card mb-3 mt-3 pt-1">
-                <div className="card-header p-2 text-center"><h3>Create Expenses</h3></div>
-                <div className="card-body">
-                    <input type="hidden" id="Id" />
-                    <div className="form-group">
-                        {/* <label className="col-form-label col-form-label-sm mt-4" htmlFor="Category">Category</label> */}
-                        <select onChange={e => setCategoryName(e.target.value)} className="form-control my-2 py-2" id="Category">
-                            {categories.map((category) => (
-                                <option key={category.categoryid} value={category.categoryid}>
-                                    {category.categoryname}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="form-group">
-                        <input onChange={e => setDescription(e.target.value)} className="form-control form-control-sm py-2" type="text" placeholder="description" id="description" required />
-                    </div>
-                    <div className="form-group">
-                        <input onChange={e => setPlace(e.target.value)} className="form-control form-control-sm py-2" type="text" placeholder="Place" id="Place" required />
-                    </div>
-                    <div className="form-group">
-                        <input onChange={e => SetAmount(e.target.value)} className="form-control form-control-sm py-2" type="number" placeholder="Enter Amount" id="Amount" required />
-                    </div>
-                    <div className="form-group">
-                        <input onChange={e => setPaymentMethod(e.target.value)} className="form-control form-control-sm py-2" type="text" placeholder="Payment Method" id="Paymentmethod" required />
-                    </div>
-                    <div className="form-group">
-                        <input onChange={e => setDate(e.target.value)} className="form-control form-control-sm py-2" type="datetime-local" id="Date" required />
-                    </div>
-                    <div className="form-group align-items-center row py-2 text-center">
-                        <div className="col-12">
-                            <button type="submit" className="btn btn-success m-auto col-6 form-control">Create</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
+      <div className="options-container">
+        {visibleOptions.map((option) => (
+          <button
+            key={option.id}
+            className="btn btn-outline-primary m-2"
+            onClick={option.onClick}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
     );
+  };
+
+  const renderStep = () => {
+    switch (step) {
+      case 1:
+        return (
+          <div>
+            <label className="bg-primary text-light" style={{borderRadius: "3px", padding: "5px"}}>Category</label>
+            <input
+              type="text"
+              className="form-control mt-2"
+              placeholder="Select below categories or enter category here"
+              value={categoryName} // Display category name
+              onChange={(e) => setCategoryName(e.target.value)} // Allow custom input
+            />
+            {renderPredefinedOptions()}
+          </div>
+        );
+      case 2:
+        return (
+          <div>
+            <label className="bg-primary text-light" style={{borderRadius: "3px", padding: "5px"}}>Description</label>
+            <input
+              type="text"
+              className="form-control mt-2"
+              placeholder="Select below names or enter name here"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+            {renderPredefinedOptions()}
+          </div>
+        );
+      case 3:
+        return (
+          <div>
+            <label className="bg-primary text-light" style={{borderRadius: "3px", padding: "5px"}}>Place</label>
+            <input
+              type="text"
+              className="form-control mt-2"
+              placeholder="Select below places or enter place"
+              value={place}
+              onChange={(e) => setPlace(e.target.value)}
+            />
+            {renderPredefinedOptions()}
+          </div>
+        );
+      case 4:
+        return (
+          <div>
+            <label className="bg-primary text-light" style={{borderRadius: "3px", padding: "5px"}}>Amount</label>
+            <input
+              type="number"
+              className="form-control mt-2"
+              placeholder="Select below amounts or enter amount"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+            />
+            {renderPredefinedOptions()}
+          </div>
+        );
+      case 5:
+        return (
+          <div>
+            <label className="bg-primary text-light" style={{borderRadius: "3px", padding: "5px"}}>Payment Method</label>
+            <input
+              type="text"
+              className="form-control mt-2"
+              placeholder="Select below payments or enter payment type"
+              value={paymentMethod}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+            />
+            {renderPredefinedOptions()}
+          </div>
+        );
+      case 6:
+        return (
+          <div>
+            <label className="bg-primary text-light" style={{borderRadius: "3px", padding: "5px"}}>Date</label>
+            <input
+              type="datetime-local"
+              className="form-control mt-2"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const renderProgressBar = () => {
+    const steps = ["Category", "Description", "Place", "Amount", "Payment", "Date"];
+  
+    return (
+      <div className="progress-container">
+        {steps.map((stepLabel, index) => (
+          <div key={index} className="progress-step">
+            <div
+              className={`circle ${step-1 > index ? "completed" : "upcoming"}`}
+              style={{ position: "relative", display: "inline-block" }}
+            />
+            <span className="legend">{stepLabel}</span>
+            {index < steps.length - 1 && (
+              <div
+                className={`line ${step-1 > index ? "completed" : "upcoming"}`}
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  };
+  
+  
+  
+
+  return (
+    <div className="container mt-5">
+      {renderProgressBar()}
+      <div className="border rounded" style={{ minHeight: "300px", padding: "5px 10px 0 10px", }}>
+        {renderStep()}
+      </div>
+
+      <div className="d-flex justify-content-between mt-3">
+        {step > 1 && (
+          <button
+            className="btn btn-secondary"
+            onClick={() => setStep(step - 1)}
+          >
+            Back
+          </button>
+        )}
+        {step < 6 ? (
+          <button
+            className="btn btn-primary ml-auto"
+            onClick={() => setStep(step + 1)}
+            disabled={
+              (step === 1 && !categoryName) ||
+              (step === 2 && !description) ||
+              (step === 3 && !place) ||
+              (step === 4 && !amount) ||
+              (step === 5 && !paymentMethod)
+            }
+          >
+            Next
+          </button>
+        ) : (
+          <button
+            className="btn btn-success ml-auto"
+            onClick={formSubmitHandler}
+            disabled={!date}
+          >
+            Submit
+          </button>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default CreateExpenses;

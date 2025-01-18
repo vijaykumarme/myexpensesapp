@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useContext, Fragment} from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { Pie, Line, Bar } from 'react-chartjs-2';
 import {
     Chart as ChartJS, 
@@ -20,7 +21,7 @@ import moment from 'moment';
 import AppContext from "../AppContext";
 import api from "../api/ApiURL";
 import "./Home.css";
-
+import CreateExpenses from "./CreateExpenses";
 
 
 ChartJS.register(
@@ -51,6 +52,8 @@ const MonthNames = [
 
 
 const Home = () => {
+
+  const navigate = useNavigate()
 
     const {setUsername} = useContext(AppContext)
     const {userName} = useContext(AppContext)
@@ -248,6 +251,9 @@ const Home = () => {
         dailyExpenses[date] += parseFloat(amount);
     });
 
+    const createRecordHandler = () => {
+      navigate("/CreateExpenses"); // Navigate to the desired page
+    }
 
     const days = Object.keys(dailyExpenses).sort((a, b) => a - b);
     const dailyAmounts = days.map(day => dailyExpenses[day]);
@@ -343,6 +349,7 @@ const lineChartOptions = {
     return (
       <Fragment>
         <div className="container-fluid">
+        <div className="d-flex justify-content-end p-2"><button className="btn btn-end bg-primary text-light" onClick={createRecordHandler}>Create + </button></div>
           <div className="main-content">
             <div className="container" style={{"box-shadow": "4px 4px 8px 2px rgba(0, 0, 0, 0.3)"}}>
               <div className="card my-2" style={{margin: "0 -15px"}}>

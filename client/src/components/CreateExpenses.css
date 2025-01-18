@@ -1,0 +1,73 @@
+.progress-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  
+  .circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    position: relative;
+  }
+  
+  /* Completed step (Green with tick mark) */
+  .completed {
+    background-color: green;
+  }
+  
+  .upcoming {
+    background-color: lightgrey; /* Upcoming steps should be light grey */
+  }
+  
+  .current {
+    background-color: lightgrey; /* Current step is also light grey */
+  }
+  
+  /* Add the tick mark only for completed steps */
+  .circle.completed::after {
+    content: "✔"; /* Unicode tick mark */
+    font-size: 18px;
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  /* Line between steps */
+  .line {
+    width: 50px;
+    height: 2px;
+    background-color: lightgrey;
+    position: absolute;
+    top: 35%;
+    left: 80%;
+    transform: translateY(-50%);
+  }
+  
+  .line.completed {
+    background-color: green; /* Line for completed steps */
+  }
+  
+  /* Text below circles */
+  .legend {
+    font-size: 12px;
+    margin-top: 5px;
+    text-align: center;
+  }
+  

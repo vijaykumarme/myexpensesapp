@@ -182,7 +182,7 @@ const Advance = () => {
                         <form onSubmit={e => categorySubmitHandler(e)} className="form-control">
                             <div className="row">
                                 <div className="col-12 my-1">
-                                    <input onChange={e => setCategory(e.target.value)} type="text" placeholder="Category" className="form-control" />
+                                    <input onChange={e => setCategory(e.target.value)} type="text" placeholder="Enter new category" className="form-control" />
                                 </div>
                             </div>
                             <div className="row">
@@ -210,10 +210,10 @@ const Advance = () => {
                         <form onSubmit={e => monthlyIncomeSubmitHandler(e)} className="form-control">
                             <div className="row">
                                 <div className="col-4 my-1">
-                                    <input onChange={e => setYear(e.target.value)} type="number" placeholder="Year" className="form-control" />
+                                    <input onChange={e => setYear(e.target.value)} type="number" placeholder="(YYYY)Year" className="form-control" />
                                 </div>
                                 <div className="col-4 my-1">
-                                    <input onChange={e => setMonth(e.target.value)} type="text" placeholder="Month" className="form-control" />
+                                    <input onChange={e => setMonth(e.target.value)} type="text" placeholder="(MM)Month" className="form-control" />
                                 </div>
                                 <div className="col-4 my-1">
                                     <input onChange={e => SetAmount(e.target.value)} type="text" placeholder="Amount" className="form-control" />
@@ -233,7 +233,7 @@ const Advance = () => {
             </div>
 
             {/* Update Password Section */}
-            <div className="border border-dark rounded m-1">
+            {/* <div className="border border-dark rounded m-1">
                 {!updatePassword ? (
                     <div className="d-flex justify-content-between align-items-center my-2 px-2">
                         <h5 className="mb-0">Update Password</h5>
@@ -259,11 +259,11 @@ const Advance = () => {
                         </form>
                     </div>
                 )}
-            </div>
+            </div> */}
 
             <div className="border border-dark rounded m-1">
                 <div className="d-flex justify-content-between align-items-center my-2 px-2">
-                    <h5 className="mb-0">View Monthly Income vs Expenses</h5>
+                    <h5 className="mb-0">View Monthly Incomes</h5>
                     <Link to="/userMonthlyIncome" className="btn btn-primary">View</Link>
                 </div>
             </div>
