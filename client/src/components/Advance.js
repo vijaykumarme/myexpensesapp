@@ -209,13 +209,13 @@ const Advance = () => {
                         <h5 className="px-1">Monthly Income</h5>
                         <form onSubmit={e => monthlyIncomeSubmitHandler(e)} className="form-control">
                             <div className="row">
-                                <div className="col-4 my-1">
+                                <div className="col-12 my-1">
                                     <input onChange={e => setYear(e.target.value)} type="number" placeholder="(YYYY)Year" className="form-control" />
                                 </div>
-                                <div className="col-4 my-1">
+                                <div className="col-12 my-1">
                                     <input onChange={e => setMonth(e.target.value)} type="text" placeholder="(MM)Month" className="form-control" />
                                 </div>
-                                <div className="col-4 my-1">
+                                <div className="col-12 my-1">
                                     <input onChange={e => SetAmount(e.target.value)} type="text" placeholder="Amount" className="form-control" />
                                 </div>
                             </div>

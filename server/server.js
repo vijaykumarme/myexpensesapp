@@ -44,6 +44,66 @@ app.post("/api/getexpenses", async (req, res) => {
   }
 });
 
+//get all the categories of the user
+app.post("/api/gettopusercategories", async(req,res) => {
+  try{
+    const topUserCategories = await pool.query(
+      "SELECT ROW_NUMBER() OVER (ORDER BY COUNT(description) DESC) AS id, categoryid,COUNT(categoryid) AS TotalCount FROM expenses WHERE userid = $1 GROUP BY categoryid ORDER BY TotalCount DESC LIMIT 10",[req.body.userName]
+    );
+    res.json(topUserCategories.rows);
+  }catch(err){
+    console.error(err.message)
+  }
+})
+
+//get top 15 descriptions of the users
+app.post("/api/gettopuserdescriptions", async(req,res) => {
+  try {
+    const topUserDescriptions = await pool.query(
+      "SELECT DISTINCT ROW_NUMBER() OVER (ORDER BY COUNT(description) DESC) AS id, description, COUNT(description) AS TotalCount FROM expenses WHERE userid = $1 GROUP BY description ORDER BY TotalCount DESC Limit 15;",[req.body.userName]
+    );
+    res.json(topUserDescriptions.rows);
+  }catch(err) {
+    console.error(err.message)
+  }
+})
+
+//get top 15 place of the users
+app.post("/api/gettopuserplaces", async(req,res) => {
+  try{
+    const topUserPlaces = await pool.query(
+      "SELECT DISTINCT ROW_NUMBER() OVER (ORDER BY COUNT(place) DESC) AS id, place, COUNT(place) AS TotalCount FROM expenses WHERE userid = $1 GROUP BY place ORDER BY TotalCount DESC Limit 15",[req.body.userName]
+    );
+    res.json(topUserPlaces.rows);
+  }catch(err){
+    console.error(err.message)
+  }
+})
+
+//get top 20 amounts of the users
+app.post("/api/gettopuseramonuts", async(req,res) => {
+  try {
+    const topUserAmounuts = await pool.query(
+      "SELECT DISTINCT ROW_NUMBER() OVER (ORDER BY COUNT(amount) DESC) AS id, amount, COUNT(amount) AS TotalCount FROM expenses WHERE userid = $1  GROUP BY amount ORDER BY TotalCount DESC Limit 20",[req.body.userName]
+    );
+    res.json(topUserAmounuts.rows);
+  }catch(err){
+    console.log(err.message);
+  }
+})
+
+//get top 10 paymeny methods of the users
+app.post("/api/gettopuserpaymentmethods", async(req,res) => {
+  try{
+    const topUserPaymentMethods = await pool.query(
+      "SELECT DISTINCT ROW_NUMBER() OVER (ORDER BY COUNT(paymentmethod) DESC) AS id, paymentmethod, COUNT(paymentmethod) AS TotalCount FROM expenses WHERE userid = $1 GROUP BY paymentmethod ORDER BY TotalCount DESC Limit 10",[req.body.userName]
+    );
+    res.json(topUserPaymentMethods.rows);
+  }catch(err){
+    console.err(err.message)
+  }
+})
+
 app.post("/api/getmonthexpenses", async (req, res) => {
   try {
     const allexpenses = await pool.query(
