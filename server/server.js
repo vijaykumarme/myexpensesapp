@@ -60,7 +60,7 @@ app.post("/api/gettopusercategories", async(req,res) => {
 app.post("/api/gettopuserdescriptions", async(req,res) => {
   try {
     const topUserDescriptions = await pool.query(
-      "SELECT DISTINCT ROW_NUMBER() OVER (ORDER BY COUNT(description) DESC) AS id, description, COUNT(description) AS TotalCount FROM expenses WHERE userid = $1 GROUP BY description ORDER BY TotalCount DESC Limit 15;",[req.body.userName]
+      "SELECT DISTINCT ROW_NUMBER() OVER (ORDER BY COUNT(description) DESC) AS id, description, COUNT(description) AS TotalCount FROM expenses WHERE userid = $1 GROUP BY description ORDER BY TotalCount DESC Limit 15",[req.body.userName]
     );
     res.json(topUserDescriptions.rows);
   }catch(err) {
@@ -156,6 +156,16 @@ app.post("/api/createexpense", async (req, res) => {
 
 //get all categories
 app.get("/api/categories", async (req, res) => {
+  try {
+    const allCategories = await pool.query("SELECT * FROM Category");
+    res.json(allCategories.rows);
+  } catch (err) {
+    console.log(err.message);
+  }
+});
+
+//get all categories
+app.get("/api/someCategories", async (req, res) => {
   try {
     const allCategories = await pool.query("SELECT * FROM Category");
     res.json(allCategories.rows);

@@ -5,6 +5,7 @@ import api from "../api/ApiURL";
 import AppContext from "../AppContext";
 
 import "./CreateExpenses.css";
+import axios from "axios";
 
 const CreateExpenses = () => {
   const { userName } = useContext(AppContext);
@@ -19,6 +20,10 @@ const CreateExpenses = () => {
   const [amount, setAmount] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
   const [date, setDate] = useState("");
+  const [topDescriptions, setTopDescriptions] = useState([]);
+  const [topPlaces, setTopPlaces] = useState([]);
+  const [topUserAmounts, setTopUserAmounts] = useState([]);
+  const [topPaymentMethods, setTopPaymentMethods] = useState([]);
 
   const [showMore, setShowMore] = useState(false);
 
@@ -27,6 +32,13 @@ const CreateExpenses = () => {
       try {
         const response = await api.get("/api/categories");
         setCategories(response.data);
+        console.log("Categories")
+        console.log(response.data);
+        const descriptionsResponse = await api.get("/api/categories")
+        console.log("Descriptions")
+        console.log(descriptionsResponse.data);
+        console.log(userName);
+
       } catch (err) {
         console.log("Error fetching categories:", err.message);
       }
