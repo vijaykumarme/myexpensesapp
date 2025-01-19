@@ -34,7 +34,7 @@ const CreateExpenses = () => {
         setCategories(response.data);
         console.log("Categories")
         console.log(response.data);
-        const descriptionsResponse = await api.get("/api/categories")
+        const descriptionsResponse = await api.get("/api/someCategories")
         console.log("Descriptions")
         console.log(descriptionsResponse.data);
         console.log(userName);
@@ -192,7 +192,7 @@ const CreateExpenses = () => {
               className="form-control mt-2"
               placeholder="Select below names or enter name here"
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(e) => setDescription(e.target.value.trim())}
             />
             {renderPredefinedOptions()}
           </div>
@@ -206,7 +206,7 @@ const CreateExpenses = () => {
               className="form-control mt-2"
               placeholder="Select below places or enter place"
               value={place}
-              onChange={(e) => setPlace(e.target.value)}
+              onChange={(e) => setPlace(e.target.value.trim())}
             />
             {renderPredefinedOptions()}
           </div>
@@ -220,7 +220,7 @@ const CreateExpenses = () => {
               className="form-control mt-2"
               placeholder="Select below amounts or enter amount"
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={(e) => setAmount(e.target.value.trim())}
             />
             {renderPredefinedOptions()}
           </div>
@@ -234,7 +234,7 @@ const CreateExpenses = () => {
               className="form-control mt-2"
               placeholder="Select below payments or enter payment type"
               value={paymentMethod}
-              onChange={(e) => setPaymentMethod(e.target.value)}
+              onChange={(e) => setPaymentMethod(e.target.value.trim())}
             />
             {renderPredefinedOptions()}
           </div>
