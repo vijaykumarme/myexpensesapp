@@ -54,24 +54,14 @@ const CreateExpenses = () => {
     const currentYear = dateObject.getFullYear();
     const userid = userName;
 
-    console.log(
-      userid,
-      categoryId,
-      description,
-      place,
-      paymentMethod,
-      currentMonth,
-      currentYear
-    );
-
     try {
       await api.post("/api/createexpense", {
         userid,
         categoryName: categoryId, // Send category ID
         Amount: parseFloat(amount),
-        description,
-        Place: place,
-        paymentMethod,
+        description: description.trim(),
+        Place: place.trim(),
+        paymentMethod: paymentMethod.trim(),
         currentMonth,
         currentYear,
         date,
@@ -119,6 +109,9 @@ const CreateExpenses = () => {
       { id: 1, label: "10", onClick: () => setAmount("10") },
       { id: 2, label: "20", onClick: () => setAmount("20") },
       { id: 3, label: "50", onClick: () => setAmount("50") },
+      { id: 3, label: "100", onClick: () => setAmount("100") },
+      { id: 3, label: "200", onClick: () => setAmount("200") },
+      { id: 3, label: "500", onClick: () => setAmount("500") },
     ],
     5: [
       { id: 1, label: "Cash", onClick: () => setPaymentMethod("Cash") },
@@ -192,7 +185,7 @@ const CreateExpenses = () => {
               className="form-control mt-2"
               placeholder="Select below names or enter name here"
               value={description}
-              onChange={(e) => setDescription(e.target.value.trim())}
+              onChange={(e) => setDescription(e.target.value)}
             />
             {renderPredefinedOptions()}
           </div>
@@ -206,7 +199,7 @@ const CreateExpenses = () => {
               className="form-control mt-2"
               placeholder="Select below places or enter place"
               value={place}
-              onChange={(e) => setPlace(e.target.value.trim())}
+              onChange={(e) => setPlace(e.target.value)}
             />
             {renderPredefinedOptions()}
           </div>
@@ -220,7 +213,7 @@ const CreateExpenses = () => {
               className="form-control mt-2"
               placeholder="Select below amounts or enter amount"
               value={amount}
-              onChange={(e) => setAmount(e.target.value.trim())}
+              onChange={(e) => setAmount(e.target.value)}
             />
             {renderPredefinedOptions()}
           </div>
@@ -234,7 +227,7 @@ const CreateExpenses = () => {
               className="form-control mt-2"
               placeholder="Select below payments or enter payment type"
               value={paymentMethod}
-              onChange={(e) => setPaymentMethod(e.target.value.trim())}
+              onChange={(e) => setPaymentMethod(e.target.value)}
             />
             {renderPredefinedOptions()}
           </div>
