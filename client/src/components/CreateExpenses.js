@@ -9,7 +9,10 @@ import axios from "axios";
 
 const CreateExpenses = () => {
   const { userName } = useContext(AppContext);
+  const { userId } = useContext(AppContext)
+
   const navigate = useNavigate();
+
 
   const [step, setStep] = useState(1);
   const [categories, setCategories] = useState([]);
@@ -52,11 +55,10 @@ const CreateExpenses = () => {
     const dateObject = new Date(date);
     const currentMonth = dateObject.getMonth() + 1;
     const currentYear = dateObject.getFullYear();
-    const userid = userName;
 
     try {
       await api.post("/api/createexpense", {
-        userid,
+        userId,
         categoryName: categoryId, // Send category ID
         Amount: parseFloat(amount),
         description: description.trim(),

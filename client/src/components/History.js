@@ -10,6 +10,8 @@ import YearMonthFilter from './YearMonthFilter';  // Import the filter component
 
 const History = () => {
     const { userName } = useContext(AppContext);
+    const { userId } = useContext(AppContext);
+
     const { allExpenses, setAllExpenses, setCategories, setExpensesid, editExpense, setEditExpense } = useContext(AppContext);
 
     const navigateTo = useNavigate();
@@ -17,7 +19,7 @@ const History = () => {
     useEffect(() => {
         const getAllRecords = async () => {
             try {
-                const response = await api.post("/api/getexpenses", { userName });
+                const response = await api.post("/api/getexpenses", { userId });
                 setAllExpenses(response.data);
             } catch (err) {
                 console.log(err.message);

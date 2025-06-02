@@ -7,7 +7,7 @@ import AppContext from "../AppContext";
 import api from "../api/ApiURL";
 
 const UserAllMonthsIncome = () => {
-    const { useremail } = useContext(AppContext);
+    const { useremail, userId } = useContext(AppContext);
 
     const [monthlyIncome, setMonthlyIncome] = useState([]);
 
@@ -15,7 +15,7 @@ const UserAllMonthsIncome = () => {
 
     async function getAllMonthsIncome() {
         try {
-            const response = await api.post("/api/getallmonthsincome", { useremail });
+            const response = await api.post("/api/getallmonthsincome", { userId });
             setMonthlyIncome(response.data);
         } catch (err) {
             console.error(err.message);

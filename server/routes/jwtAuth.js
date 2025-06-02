@@ -69,7 +69,7 @@ router.post("/login", validInfo, async (req,res) => {
             return res.status(401).json("Password or Email is incorrect");
         };
 
-        // //3. check if incoming password is the same the database password
+        //3. check if incoming password is the same the database password
 
         const validPassword = await bcrypt.compare(password,user.rows[0].userpassword);
 
@@ -77,7 +77,7 @@ router.post("/login", validInfo, async (req,res) => {
             return res.status(401).json("Password or Email is incorrect");
         }
 
-        // //4. give then the jwt token
+        //4. give then the jwt token
 
         const token = jwtGenerator(user.rows[0].userid)
 
@@ -124,6 +124,7 @@ router.put("/update-password", validInfo, async (req, res) => {
 //       res.status(500).send("Server error");
 //     }
 //   });
+
   
 
 router.get("/is-verify", authorization, async(req,res) => {

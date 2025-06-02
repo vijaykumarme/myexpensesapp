@@ -31,12 +31,21 @@ app.use("/api/auth",require("./routes/jwtAuth.js"))
 //dashboard
 app.use("/api/userdashboard",require("./routes/userdashboard.js"))
 
+//Get previous two months expenses
+app.post("/api/recentMonthsSavings", async(req,res) => {
+  try{
+    const recentMonthsSavings = await pool.query("SELECT exp.year,exp.month,mi.amount AS monthly_income,SUM(exp.amount) AS total_expense FROM expenses AS exp LEFT JOIN monthlyincome AS mi ON mi.userid = exp.userid AND mi.year = exp.year AND mi.month = exp.month WHERE exp.userid = $1 AND DATE_TRUNC('month', MAKE_DATE(exp.year, exp.month, 1)) BETWEEN DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '2 months' AND DATE_TRUNC('month', CURRENT_DATE) GROUP BY exp.year, exp.month, mi.amount ORDER BY exp.year DESC, exp.month DESC;",[req.body.userId]);
+    res.json(recentMonthsSavings.rows);
+  }catch(err){
+    console.error(err.message);
+  }
+})
 
 //get all the records
 app.post("/api/getexpenses", async (req, res) => {
   try {
     const allexpenses = await pool.query(
-      "select expenseid,Extract(Day from Date) as Date,Month,Year,c.Categoryname,Description,Place,Paymentmethod,Amount from expenses e inner join Category c on c.Categoryid = e.Categoryid where userid = $1 order by Year desc,Month desc,date desc",[req.body.userName]
+      "select expenseid,Extract(Day from Date) as Date,Month,Year,c.Categoryname,Description,Place,Paymentmethod,Amount from expenses e inner join Category c on c.Categoryid = e.Categoryid where userid = $1 order by Year desc,Month desc,date desc",[req.body.userId]
     );
     res.json(allexpenses.rows);
   } catch (err) {
@@ -48,7 +57,7 @@ app.post("/api/getexpenses", async (req, res) => {
 app.post("/api/gettopusercategories", async(req,res) => {
   try{
     const topUserCategories = await pool.query(
-      "SELECT ROW_NUMBER() OVER (ORDER BY COUNT(description) DESC) AS id, categoryid,COUNT(categoryid) AS TotalCount FROM expenses WHERE userid = $1 GROUP BY categoryid ORDER BY TotalCount DESC LIMIT 10",[req.body.userName]
+      "SELECT ROW_NUMBER() OVER (ORDER BY COUNT(description) DESC) AS id, categoryid,COUNT(categoryid) AS TotalCount FROM expenses WHERE userid = $1 GROUP BY categoryid ORDER BY TotalCount DESC LIMIT 10",[req.body.userId]
     );
     res.json(topUserCategories.rows);
   }catch(err){
@@ -60,7 +69,7 @@ app.post("/api/gettopusercategories", async(req,res) => {
 app.post("/api/gettopuserdescriptions", async(req,res) => {
   try {
     const topUserDescriptions = await pool.query(
-      "SELECT DISTINCT ROW_NUMBER() OVER (ORDER BY COUNT(description) DESC) AS id, description, COUNT(description) AS TotalCount FROM expenses WHERE userid = $1 GROUP BY description ORDER BY TotalCount DESC Limit 15",[req.body.userName]
+      "SELECT DISTINCT ROW_NUMBER() OVER (ORDER BY COUNT(description) DESC) AS id, description, COUNT(description) AS TotalCount FROM expenses WHERE userid = $1 GROUP BY description ORDER BY TotalCount DESC Limit 15",[req.body.userId]
     );
     res.json(topUserDescriptions.rows);
   }catch(err) {
@@ -72,7 +81,7 @@ app.post("/api/gettopuserdescriptions", async(req,res) => {
 app.post("/api/gettopuserplaces", async(req,res) => {
   try{
     const topUserPlaces = await pool.query(
-      "SELECT DISTINCT ROW_NUMBER() OVER (ORDER BY COUNT(place) DESC) AS id, place, COUNT(place) AS TotalCount FROM expenses WHERE userid = $1 GROUP BY place ORDER BY TotalCount DESC Limit 15",[req.body.userName]
+      "SELECT DISTINCT ROW_NUMBER() OVER (ORDER BY COUNT(place) DESC) AS id, place, COUNT(place) AS TotalCount FROM expenses WHERE userid = $1 GROUP BY place ORDER BY TotalCount DESC Limit 15",[req.body.userId]
     );
     res.json(topUserPlaces.rows);
   }catch(err){
@@ -84,7 +93,7 @@ app.post("/api/gettopuserplaces", async(req,res) => {
 app.post("/api/gettopuseramonuts", async(req,res) => {
   try {
     const topUserAmounuts = await pool.query(
-      "SELECT DISTINCT ROW_NUMBER() OVER (ORDER BY COUNT(amount) DESC) AS id, amount, COUNT(amount) AS TotalCount FROM expenses WHERE userid = $1  GROUP BY amount ORDER BY TotalCount DESC Limit 20",[req.body.userName]
+      "SELECT DISTINCT ROW_NUMBER() OVER (ORDER BY COUNT(amount) DESC) AS id, amount, COUNT(amount) AS TotalCount FROM expenses WHERE userid = $1  GROUP BY amount ORDER BY TotalCount DESC Limit 20",[req.body.userId]
     );
     res.json(topUserAmounuts.rows);
   }catch(err){
@@ -96,7 +105,7 @@ app.post("/api/gettopuseramonuts", async(req,res) => {
 app.post("/api/gettopuserpaymentmethods", async(req,res) => {
   try{
     const topUserPaymentMethods = await pool.query(
-      "SELECT DISTINCT ROW_NUMBER() OVER (ORDER BY COUNT(paymentmethod) DESC) AS id, paymentmethod, COUNT(paymentmethod) AS TotalCount FROM expenses WHERE userid = $1 GROUP BY paymentmethod ORDER BY TotalCount DESC Limit 10",[req.body.userName]
+      "SELECT DISTINCT ROW_NUMBER() OVER (ORDER BY COUNT(paymentmethod) DESC) AS id, paymentmethod, COUNT(paymentmethod) AS TotalCount FROM expenses WHERE userid = $1 GROUP BY paymentmethod ORDER BY TotalCount DESC Limit 10",[req.body.userId]
     );
     res.json(topUserPaymentMethods.rows);
   }catch(err){
@@ -107,7 +116,7 @@ app.post("/api/gettopuserpaymentmethods", async(req,res) => {
 app.post("/api/getmonthexpenses", async (req, res) => {
   try {
     const allexpenses = await pool.query(
-      "select expenseid,Extract(Day from Date) as Date,Month,Year,c.Categoryname,Description,Place,Paymentmethod,Amount from expenses e  inner join Category c on c.Categoryid = e.Categoryid  where userid = $1 order by Year desc,Month desc,date desc",[req.body.userName]
+      "select expenseid,Extract(Day from Date) as Date,Month,Year,c.Categoryname,Description,Place,Paymentmethod,Amount from expenses e  inner join Category c on c.Categoryid = e.Categoryid  where userid = $1 order by Year desc,Month desc,date desc",[req.body.userId]
     );
     res.json(allexpenses.rows);
   } catch (err) {
@@ -137,7 +146,7 @@ app.post("/api/createexpense", async (req, res) => {
     const createExpenses = await pool.query(
       "INSERT INTO expenses (userid,categoryid,amount,description,place,paymentmethod,month,year,date) VALUES ($1,$2, $3, $4,$5,$6,$7,$8,$9) returning *",
     [
-        req.body.userid,
+        req.body.userId,
         req.body.categoryName,
         req.body.Amount,
         req.body.description,
@@ -218,7 +227,7 @@ app.delete("/api/deleteexpense/:id", async (req, res) => {
 //get all the expenses for current month
 app.post("/api/getcurrentmonthexpenses", async(req,res) => {
   try {
-    const getcurrentmonthexpenses = await pool.query("select e.month,e.year,c.categoryname,sum(e.amount) as totalamount from expenses e inner join category c ON e.categoryid = c.categoryid where month = $1 and year = $2 and userid = $3 group by month,year,categoryname",[req.body.currentMonth,req.body.currentYear,req.body.userName]);
+    const getcurrentmonthexpenses = await pool.query("select e.month,e.year,c.categoryname,sum(e.amount) as totalamount from expenses e inner join category c ON e.categoryid = c.categoryid where month = $1 and year = $2 and userid = $3 group by month,year,categoryname",[req.body.currentMonth,req.body.currentYear,req.body.userId]);
     res.json(getcurrentmonthexpenses.rows)
   } catch(err) {
     console.log(err.message)
@@ -227,7 +236,7 @@ app.post("/api/getcurrentmonthexpenses", async(req,res) => {
 
 app.post("/api/getexpensesbymonthcategory", async(req,res) => {
   try {
-    const getexpensesbymonthcategory = await pool.query("select e.year,e.month,c.categoryname,sum(e.amount) as Amount from expenses e inner join category c on e.categoryid = c.categoryid where userid = $1 group by e.year,e.month,c.categoryname order by e.year,e.month,c.categoryname;",[req.body.userName]);
+    const getexpensesbymonthcategory = await pool.query("select e.year,e.month,c.categoryname,sum(e.amount) as Amount from expenses e inner join category c on e.categoryid = c.categoryid where userid = $1 group by e.year,e.month,c.categoryname order by e.year,e.month,c.categoryname;",[req.body.userId]);
     res.json(getexpensesbymonthcategory.rows)
   } catch(err) {
     console.log(err.message) 
@@ -249,7 +258,7 @@ app.post("/api/addCategory", async(req,res) => {
 app.post("/api/addmonthlyincome", async(req,res) => {
   try{
 
-    const incomeExists = await pool.query("SELECT * FROM monthlyincome WHERE year = $1 AND month = $2 AND userid = $3",[req.body.year, req.body.month, req.body.useremail]);
+    const incomeExists = await pool.query("SELECT * FROM monthlyincome WHERE year = $1 AND month = $2 AND userid = $3",[req.body.year, req.body.month, req.body.userId]);
 
     if(incomeExists.rows.length !== 0) {
       return res.status(401).json("Record already exists")
@@ -274,7 +283,7 @@ app.post("/api/addmonthlyincome", async(req,res) => {
 app.post("/api/getmonthlyincome", async(req,res) => {
   try {
     const getmonthlyincome = await pool.query("SELECT * FROM monthlyincome where year = $1 AND month = $2 and userid = $3",
-    [req.body.currentYear,req.body.currentMonth,req.body.useremail]);
+    [req.body.currentYear,req.body.currentMonth,req.body.userId]);
     res.json(getmonthlyincome.rows[0])
 
   } catch(err) {
@@ -285,7 +294,7 @@ app.post("/api/getmonthlyincome", async(req,res) => {
 app.post("/api/getallmonthsincome", async(req,res) => {
   try {
     const getallmonthsincome = await pool.query("SELECT * FROM monthlyincome WHERE userid = $1 order by year,month",
-    [req.body.useremail]
+    [req.body.userId]
     )
 
     res.json(getallmonthsincome.rows)
@@ -309,6 +318,19 @@ app.delete("/api/deletemonthincome/:id", async(req,res) => {
 //Server Port
 const port = process.env.PORT || 5000
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`Server is running on port ${port}`);
+// });
+
+app.get("/Test", async(req,res) => {
+  try{
+    res.json("Working");
+  } catch(err){
+    console.error(err.message);
+  }
+})
+
+// Server  Port 5000
+app.listen(5000, () => {
+  console.log("Server is starting on port 5000");
+})

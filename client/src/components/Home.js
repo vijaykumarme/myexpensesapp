@@ -22,6 +22,7 @@ import AppContext from "../AppContext";
 import api from "../api/ApiURL";
 import "./Home.css";
 import CreateExpenses from "./CreateExpenses";
+import App from "../App";
 
 
 ChartJS.register(
@@ -65,11 +66,12 @@ const Home = () => {
     const {setCurrentTimeInHours} = useContext(AppContext);
     const { setIsTodayRecordExists } = useContext(AppContext);
     const { isTodayRecordExists } = useContext(AppContext);
+    const { userId } = useContext(AppContext)
+    const { setUserId } = useContext(AppContext);
 
     const [getCurrentMonthExpenses, setGetCurrentMonthExpenes] = useState([]);
     const [getAllExpenses, setGetAllExpenses] = useState([])
     const [getCurrentMonthIncome, setGetCurrentMonthIncome] = useState([])
-
 
     const dateObject = new Date();
     const currentMonth = dateObject.getMonth()+1;
@@ -83,11 +85,11 @@ const Home = () => {
 
     async function getCurrentMonthExpensesFunc () {
         try {
-            const responsemonthly = await api.post("/api/getcurrentmonthexpenses",{currentMonth,currentYear,userName});
+            const responsemonthly = await api.post("/api/getcurrentmonthexpenses",{currentMonth,currentYear,userId});
             setGetCurrentMonthExpenes(responsemonthly.data)
-            const responseall = await api.post("/api/getmonthexpenses",{userName});
+            const responseall = await api.post("/api/getmonthexpenses",{userId});
             setGetAllExpenses(responseall.data)
-            const getcurrentincome = await api.post("/api/getmonthlyincome",{currentYear,currentMonth,useremail});
+            const getcurrentincome = await api.post("/api/getmonthlyincome",{currentYear,currentMonth,userId});
             setGetCurrentMonthIncome(getcurrentincome.data)
         } catch(err) {
             console.log(err.message)
@@ -123,8 +125,10 @@ const Home = () => {
             const parseRes = response.data
             const currentUsername = parseRes.username
             const currentUserEmail = parseRes.useremail
+            const currentUserID = parseRes.userid
             setUsername(currentUsername)
             setUseremail(currentUserEmail)
+            setUserId(currentUserID)
             
         } catch(err) {
             console.error(err.message);

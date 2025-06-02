@@ -8,7 +8,7 @@ import AppContext from "../AppContext";
 import api from "../api/ApiURL";
 
 const Advance = () => {
-    const { useremail } = useContext(AppContext);
+    const { useremail, userId } = useContext(AppContext);
 
     const [addCategory, setAddCategory] = useState(false);
     const [addMonthlyIncome, setAddMonthlyIncome] = useState(false);
@@ -87,7 +87,7 @@ const Advance = () => {
                 year,
                 month,
                 amount,
-                useremail
+                userId
             });
 
             if (response.data !== 0) {
