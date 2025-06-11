@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const pool = require("./db");
+const bcrypt = require("bcrypt");
 
 //middleware
 
@@ -330,7 +331,110 @@ app.get("/Test", async(req,res) => {
   }
 })
 
+
+// TaskTrek
+
+// SIGN-UP
+app.post("/TaskTrek/Signup", async (req, res) => {
+  try {
+    const { username, useremail, password } = req.body;
+    if (!username || !useremail || !password)
+      return res.status(400).json({ message: "Missing fields" });
+
+    const checkUser = await pool.query(
+      "SELECT 1 FROM tasktrekuser WHERE email = $1",
+      [useremail]
+    );
+    if (checkUser.rows.length) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    const password_hash = await bcrypt.hash(password, 10);
+
+    const result = await pool.query(
+      `INSERT INTO tasktrekuser (username, email, password_hash)
+       VALUES ($1,$2,$3)
+       RETURNING id, username, email, created_at`,
+      [username, useremail, password_hash]
+    );
+
+    res.status(201).json(result.rows[0]);           // {id,username,email,created_at}
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+app.post("/TaskTrek/Login", async(req,res) => {
+  try{
+    const {useremail, password} = req.body
+
+    //check user
+    const user = await pool.query('SELECT * FROM tasktrekuser WHERE email = $1',[useremail])
+
+    if(user.rows.length === 0){
+      res.status(401).json({"message": "Invalid email or password"})
+    }
+
+    const isMatch = await bcrypt.compare(password, user.rows[0].password_hash)
+
+    if(!isMatch){
+      res.status(401).json({"message": "Invalid email or password"})
+    }
+
+    res.status(201).json({"userid": user.rows[0].id,"useremal": user.rows[0].username, "password": user.rows[0].email})
+
+  }catch(err){
+    console.log(err.message);
+  }
+})
+
+app.get("/TaskTrek/Tasks/:userid", async(req,res) => {
+  try{
+    const {userid} = req.params;
+
+    const tasks = await pool.query('SELECT Id, user_id, title, description, created_at, started_at, completed_at, status from tasks where user_id = $1',[userid])
+
+    res.status(200).json(tasks.rows)
+
+  }catch(err){
+    console.log(err.message)
+  }
+})
+
+app.post("/TaskTrek/Create", async(req,res) => {
+  try{
+    const {userid, title, description,status} = req.body
+
+    const task = await pool.query('INSERT INTO tasks (user_id, title, description,status) VALUES ($1,$2,$3,$4) RETURNING *',[userid, title, description,status])
+
+    res.status(201).json(task.rows[0])
+
+  }catch(err){
+    console.log(err.message)
+  }
+})
+
+app.delete("/TaskTrek/Delete/:id", async(req,res) => {
+  try{
+    const {id} = req.params;
+
+    const task = await pool.query('Select id, title, description from tasks where id = $1',[id])
+
+    if(task.rows.length === 0){
+      res.status(401).json({"message": "task not found"})
+    }
+
+    await pool.query('DELETE FROM tasks where id = $1', [id]);
+
+    res.status(200).json({"message": "Task deleted successfully"})
+
+  }catch(err){
+    console.log(err.message)
+  }
+})
+
 // Server  Port 5000
-app.listen(port, () => {
+app.listen(5000, () => {
   console.log("Server is starting on port 5000");
 })

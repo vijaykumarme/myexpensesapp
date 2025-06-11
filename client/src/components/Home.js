@@ -126,6 +126,7 @@ const Home = () => {
             const currentUsername = parseRes.username
             const currentUserEmail = parseRes.useremail
             const currentUserID = parseRes.userid
+            console.log(currentUserID)
             setUsername(currentUsername)
             setUseremail(currentUserEmail)
             setUserId(currentUserID)

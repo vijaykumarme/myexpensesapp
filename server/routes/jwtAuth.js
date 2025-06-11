@@ -59,6 +59,9 @@ router.post("/login", validInfo, async (req,res) => {
         const email = req.body.email;
         const password = req.body.password;
 
+        console.log(email)
+        console.log(password)
+
         //2. check if user doesn't exits (if not then we throw error)
 
         const user = await pool.query("SELECT * FROM users WHERE useremail = $1",
@@ -128,6 +131,7 @@ router.put("/update-password", validInfo, async (req, res) => {
   
 
 router.get("/is-verify", authorization, async(req,res) => {
+    console.log(req.body)
     try {
         res.json(true)
     } catch(err) {
